@@ -21,7 +21,7 @@ describe('Judeau external asset manifest', () => {
 
   it('registers the Judeau battle sheet', () => {
     registerJudeauAssets();
-    expect(getBattleAsset('judeau')?.url).toBe('/sprites/battle/judeau.png');
+    expect(getBattleAsset('judeau')?.url).toBe('/sprites/battle/judeau.webp');
     const b = getBattleAsset('judeau')!;
     expect(gridCols(b)).toBe(9);
     expect(gridRows(b)).toBe(2);
@@ -29,13 +29,13 @@ describe('Judeau external asset manifest', () => {
 
   it('registers the Judeau map sheet with 8 directional frames', () => {
     registerJudeauAssets();
-    expect(getMapAsset('judeau')?.url).toBe('/sprites/map/judeau.png');
+    expect(getMapAsset('judeau')?.url).toBe('/sprites/map/judeau.webp');
     expect(getMapAsset('judeau')!.frames).toHaveLength(8);
   });
 
   it('registers the Judeau portrait sheet with 10 expressions', () => {
     registerJudeauAssets();
-    expect(getPortraitAsset('judeau')?.url).toBe('/portraits/judeau.png');
+    expect(getPortraitAsset('judeau')?.url).toBe('/portraits/judeau.webp');
     expect(getPortraitAsset('judeau')!.expressions).toHaveLength(10);
     expect(getPortraitAsset('judeau')!.expressions).toContain('neutral');
   });

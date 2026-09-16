@@ -8,9 +8,9 @@ import {
   type BattleAsset, type MapAsset, type PortraitAsset,
 } from '../assetLoader';
 
-const JUDEAU_BATTLE_URL   = '/sprites/battle/judeau.png';
-const JUDEAU_MAP_URL      = '/sprites/map/judeau.png';
-const JUDEAU_PORTRAIT_URL = '/portraits/judeau.png';
+const JUDEAU_BATTLE_URL   = '/sprites/battle/judeau.webp';
+const JUDEAU_MAP_URL      = '/sprites/map/judeau.webp';
+const JUDEAU_PORTRAIT_URL = '/portraits/judeau.webp';
 
 const BATTLE_COLS = 9;
 const BATTLE_ROWS = 2;

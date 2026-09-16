@@ -18,19 +18,19 @@ describe('Pippin external asset manifest', () => {
 
   it('registers the Pippin battle sheet', () => {
     registerPippinAssets();
-    expect(getBattleAsset('pippin')?.url).toBe('/sprites/battle/pippin.png');
+    expect(getBattleAsset('pippin')?.url).toBe('/sprites/battle/pippin.webp');
     expect(gridCols(getBattleAsset('pippin')!)).toBe(9);
   });
 
   it('registers the Pippin map sheet', () => {
     registerPippinAssets();
-    expect(getMapAsset('pippin')?.url).toBe('/sprites/map/pippin.png');
+    expect(getMapAsset('pippin')?.url).toBe('/sprites/map/pippin.webp');
     expect(getMapAsset('pippin')!.frames).toHaveLength(8);
   });
 
   it('registers the Pippin portrait sheet', () => {
     registerPippinAssets();
-    expect(getPortraitAsset('pippin')?.url).toBe('/portraits/pippin.png');
+    expect(getPortraitAsset('pippin')?.url).toBe('/portraits/pippin.webp');
     expect(getPortraitAsset('pippin')!.expressions).toHaveLength(10);
   });
 

@@ -15,9 +15,9 @@ import {
   type BattleAsset, type MapAsset, type PortraitAsset,
 } from '../assetLoader';
 
-const GUTS_BATTLE_URL   = '/sprites/battle/guts.png';
-const GUTS_MAP_URL      = '/sprites/map/guts.png';
-const GUTS_PORTRAIT_URL = '/portraits/guts.png';
+const GUTS_BATTLE_URL   = '/sprites/battle/guts.webp';
+const GUTS_MAP_URL      = '/sprites/map/guts.webp';
+const GUTS_PORTRAIT_URL = '/portraits/guts.webp';
 
 const BATTLE_COLS = 9;
 const BATTLE_ROWS = 2;

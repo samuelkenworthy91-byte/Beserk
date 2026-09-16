@@ -9,9 +9,9 @@ import {
   type BattleAsset, type MapAsset, type PortraitAsset,
 } from '../assetLoader';
 
-const GRIFFITH_BATTLE_URL   = '/sprites/battle/griffith.png';
-const GRIFFITH_MAP_URL      = '/sprites/map/griffith.png';
-const GRIFFITH_PORTRAIT_URL = '/portraits/griffith.png';
+const GRIFFITH_BATTLE_URL   = '/sprites/battle/griffith.webp';
+const GRIFFITH_MAP_URL      = '/sprites/map/griffith.webp';
+const GRIFFITH_PORTRAIT_URL = '/portraits/griffith.webp';
 
 const BATTLE_COLS = 9;
 const BATTLE_ROWS = 2;

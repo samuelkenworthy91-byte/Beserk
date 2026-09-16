@@ -8,9 +8,9 @@ import {
   type BattleAsset, type MapAsset, type PortraitAsset,
 } from '../assetLoader';
 
-const PIPPIN_BATTLE_URL   = '/sprites/battle/pippin.png';
-const PIPPIN_MAP_URL      = '/sprites/map/pippin.png';
-const PIPPIN_PORTRAIT_URL = '/portraits/pippin.png';
+const PIPPIN_BATTLE_URL   = '/sprites/battle/pippin.webp';
+const PIPPIN_MAP_URL      = '/sprites/map/pippin.webp';
+const PIPPIN_PORTRAIT_URL = '/portraits/pippin.webp';
 
 const BATTLE_COLS = 9;
 const BATTLE_ROWS = 2;

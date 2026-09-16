@@ -54,12 +54,12 @@ describe('characterAssets aggregator', () => {
 
   it('keeps adding authored entries without losing earlier registrations', () => {
     registerAllCharacterAssets();
-    expect(getBattleAsset('guts')?.url).toBe('/sprites/battle/guts.png');
-    expect(getBattleAsset('griffith')?.url).toBe('/sprites/battle/griffith.png');
-    expect(getBattleAsset('casca')?.url).toBe('/sprites/battle/casca.png');
-    expect(getBattleAsset('judeau')?.url).toBe('/sprites/battle/judeau.png');
-    expect(getBattleAsset('pippin')?.url).toBe('/sprites/battle/pippin.png');
-    expect(getBattleAsset('corkus')?.url).toBe('/sprites/battle/corkus.png');
+    expect(getBattleAsset('guts')?.url).toBe('/sprites/battle/guts.webp');
+    expect(getBattleAsset('griffith')?.url).toBe('/sprites/battle/griffith.webp');
+    expect(getBattleAsset('casca')?.url).toBe('/sprites/battle/casca.webp');
+    expect(getBattleAsset('judeau')?.url).toBe('/sprites/battle/judeau.webp');
+    expect(getBattleAsset('pippin')?.url).toBe('/sprites/battle/pippin.webp');
+    expect(getBattleAsset('corkus')?.url).toBe('/sprites/battle/corkus.webp');
   });
 
   it('preloadAllCharacterAssets tolerates stub modules', async () => {

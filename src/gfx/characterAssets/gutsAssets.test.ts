@@ -26,7 +26,7 @@ describe('Guts external asset manifest', () => {
     registerGutsAssets();
     const b = getBattleAsset('guts');
     expect(b).not.toBeNull();
-    expect(b!.url).toBe('/sprites/battle/guts.png');
+    expect(b!.url).toBe('/sprites/battle/guts.webp');
   });
 
   it('registers the Guts battle sheet', () => {

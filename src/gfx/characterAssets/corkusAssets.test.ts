@@ -18,21 +18,15 @@ describe('Corkus external asset manifest', () => {
 
   it('registers the Corkus battle sheet', () => {
     registerCorkusAssets();
-    expect(getBattleAsset('corkus')?.url).toBe('/sprites/battle/corkus.png');
+    expect(getBattleAsset('corkus')?.url).toBe('/sprites/battle/corkus.webp');
     expect(gridCols(getBattleAsset('corkus')!)).toBe(9);
   });
 
-  it('registers a Corkus map sheet manifest entry (no PNG yet)', () => {
+  it('registers no Corkus map/portrait sheet (not yet authored)', () => {
     registerCorkusAssets();
-    // Even with no PNG on disk yet, the manifest declares a slot
-    // so the renderer knows an external sheet is expected.
-    expect(getMapAsset('corkus')?.url).toBe('/sprites/map/corkus.png');
-  });
-
-  it('registers a Corkus portrait sheet manifest entry (no PNG yet)', () => {
-    registerCorkusAssets();
-    expect(getPortraitAsset('corkus')?.url).toBe('/portraits/corkus.png');
-    expect(getPortraitAsset('corkus')!.expressions).toHaveLength(10);
+    // Map and portrait fall back to the code-authored renderer for now.
+    expect(getMapAsset('corkus')).toBeNull();
+    expect(getPortraitAsset('corkus')).toBeNull();
   });
 
   it('idempotent', () => {

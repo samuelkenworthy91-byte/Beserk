@@ -24,7 +24,7 @@ describe('Griffith external asset manifest', () => {
     registerGriffithAssets();
     const b = getBattleAsset('griffith');
     expect(b).not.toBeNull();
-    expect(b!.url).toBe('/sprites/battle/griffith.png');
+    expect(b!.url).toBe('/sprites/battle/griffith.webp');
     expect(gridCols(b!)).toBe(9);
     expect(gridRows(b!)).toBe(2);
     expect(b!.sheet.cellW).toBeCloseTo(1408 / 9);
@@ -34,7 +34,7 @@ describe('Griffith external asset manifest', () => {
     registerGriffithAssets();
     const m = getMapAsset('griffith');
     expect(m).not.toBeNull();
-    expect(m!.url).toBe('/sprites/map/griffith.png');
+    expect(m!.url).toBe('/sprites/map/griffith.webp');
     expect(gridCols(m!)).toBe(4);
     expect(m!.frames).toHaveLength(8);
     expect(m!.frames).toContain('idle-front');
@@ -46,7 +46,7 @@ describe('Griffith external asset manifest', () => {
     registerGriffithAssets();
     const p = getPortraitAsset('griffith');
     expect(p).not.toBeNull();
-    expect(p!.url).toBe('/portraits/griffith.png');
+    expect(p!.url).toBe('/portraits/griffith.webp');
     expect(gridCols(p!)).toBe(5);
     expect(gridRows(p!)).toBe(2);
     expect(p!.expressions).toHaveLength(10);

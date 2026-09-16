@@ -32,3 +32,7 @@ android/capacitor-cordova-android-plugins/src/main/assets/
 .idea/
 .vscode/
 *.swp
+
+# AI-generated source PNGs — archived locally for reference only.
+# The shipped assets in public/ are the WebP-converted versions.
+.source-originals/

@@ -23,7 +23,7 @@ describe('Casca external asset manifest', () => {
     registerCascaAssets();
     const b = getBattleAsset('casca');
     expect(b).not.toBeNull();
-    expect(b!.url).toBe('/sprites/battle/casca.png');
+    expect(b!.url).toBe('/sprites/battle/casca.webp');
     expect(gridCols(b!)).toBe(9);
     expect(gridRows(b!)).toBe(2);
   });
@@ -32,7 +32,7 @@ describe('Casca external asset manifest', () => {
     registerCascaAssets();
     const m = getMapAsset('casca');
     expect(m).not.toBeNull();
-    expect(m!.url).toBe('/sprites/map/casca.png');
+    expect(m!.url).toBe('/sprites/map/casca.webp');
     expect(gridCols(m!)).toBe(4);
     expect(m!.frames).toHaveLength(8);
     expect(m!.frames).toContain('idle-front');
@@ -44,7 +44,7 @@ describe('Casca external asset manifest', () => {
     registerCascaAssets();
     const p = getPortraitAsset('casca');
     expect(p).not.toBeNull();
-    expect(p!.url).toBe('/portraits/casca.png');
+    expect(p!.url).toBe('/portraits/casca.webp');
     expect(gridCols(p!)).toBe(5);
     expect(gridRows(p!)).toBe(2);
     expect(p!.expressions).toHaveLength(10);

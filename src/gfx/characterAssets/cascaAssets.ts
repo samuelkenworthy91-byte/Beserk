@@ -10,9 +10,9 @@ import {
   type BattleAsset, type MapAsset, type PortraitAsset,
 } from '../assetLoader';
 
-const CASCA_BATTLE_URL   = '/sprites/battle/casca.png';
-const CASCA_MAP_URL      = '/sprites/map/casca.png';
-const CASCA_PORTRAIT_URL = '/portraits/casca.png';
+const CASCA_BATTLE_URL   = '/sprites/battle/casca.webp';
+const CASCA_MAP_URL      = '/sprites/map/casca.webp';
+const CASCA_PORTRAIT_URL = '/portraits/casca.webp';
 
 const BATTLE_COLS = 9;
 const BATTLE_ROWS = 2;
