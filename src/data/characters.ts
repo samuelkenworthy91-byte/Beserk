@@ -284,6 +284,21 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'It folds in on itself. The road is finally quiet.',
     },
   },
+  // ─────────── Chapter 11 boss: chief warden at the Tower of Rebirth ───────────
+  c_warden: {
+    defId: 'c_warden', name: 'Chief Warden', cls: 'Dungeon Chief', level: 6, sprite: 'fighter', portrait: 'soldier',
+    desc: 'The chief warden of the Tower of Rebirth. He has held the keys for ten years. He has used them on every kind of prisoner. He has never had the door opened on him.',
+    stats: s({ hp: 36, str: 9, skl: 7, spd: 5, lck: 2, def: 9, res: 4, mov: 4, con: 14 }),
+    growths: zero,
+    items: [{ id: 'iron_axe', uses: 36 }],
+    ai: 'boss', boss: true,
+    traits: ['unflinching'],
+    quotes: {
+      battle: 'The keys are mine. The doors are mine. The corridor is mine — and you, walking in, are mine.',
+      rage: 'You do not get past me! You do NOT — ',
+      death: 'The keys... are... not... mine...',
+    },
+  },
 };
 
 let uidCounter = 1;
