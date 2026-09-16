@@ -241,6 +241,33 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'A hundred years... a hundred years the gate... the gate held...',
     },
   },
+  // ─────────── Chapter 9: apostle templates (the eclipse) ───────────
+  // Lesser apostle: humanoid shape, fast, low HP, drops on contact.
+  a_lesser: {
+    defId: 'a_lesser', name: 'Lesser Apostle', cls: 'Lesser Demon', level: 5, sprite: 'fighter', portrait: 'soldier',
+    desc: 'A human shape that has stopped being human. It moves fast and does not stay dead for long.',
+    stats: s({ hp: 24, str: 9, skl: 8, spd: 12, lck: 0, def: 5, res: 6, mov: 7, con: 8 }),
+    growths: zero,
+    items: [],
+    ai: 'attack',
+    quotes: {
+      death: 'It folds in on itself like wet paper.',
+    },
+  },
+  // Vortex apostle: the eclipse given a body. The chapter boss.
+  a_vortex: {
+    defId: 'a_vortex', name: 'Vortex Apostle', cls: 'Greater Demon', level: 10, sprite: 'warlord', portrait: 'bazuso',
+    desc: 'A shape with too many arms and a mouth that should not be on a face. The eclipse is wearing it like a glove. There is no UNFLINCHING — there is no body to flinch from.',
+    stats: s({ hp: 60, str: 14, skl: 10, spd: 11, lck: 0, def: 8, res: 12, mov: 8, con: 18 }),
+    growths: zero,
+    items: [],
+    ai: 'boss', boss: true,
+    quotes: {
+      battle: 'It does not speak. It is not sure how.',
+      rage: 'Its mouths widen. The air around it bends.',
+      death: 'It folds in on itself. The hand of the eclipse is still there — but for a moment, the air clears.',
+    },
+  },
 };
 
 let uidCounter = 1;
