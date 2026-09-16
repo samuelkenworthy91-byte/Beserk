@@ -212,6 +212,20 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'The grain... they choose grain over the march...',
     },
   },
+  // ─────────── Chapter 7 boss: imperial centurion at Foross ───────────
+  c_centurion: {
+    defId: 'c_centurion', name: 'Centurion', cls: 'Imperial Centurion', level: 6, sprite: 'soldier', portrait: 'soldier',
+    desc: 'An imperial centurion. Tough, cautious, and very good at his job. He holds his tower until he has reason not to — and Guts walking into his courtyard is reason enough.',
+    stats: s({ hp: 34, str: 9, skl: 7, spd: 6, lck: 2, def: 8, res: 4, mov: 5, con: 13 }),
+    growths: zero,
+    items: [{ id: 'iron_sword', uses: 30 }, { id: 'short_bow', uses: 30 }],
+    ai: 'boss', boss: true,
+    quotes: {
+      battle: 'A band of mercenary dogs, here — for a fire I never lit. Hold them long enough and the river-wardens will light it for me.',
+      rage: 'Hold the wall! Hold the wall, or I\'ll hold it with your corpse!',
+      death: 'The fire... was never lit...',
+    },
+  },
 };
 
 let uidCounter = 1;
