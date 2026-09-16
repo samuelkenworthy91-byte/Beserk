@@ -71,11 +71,16 @@ export const CHARACTERS: Record<string, CharTemplate> = {
   },
   casca: {
     defId: 'casca', name: 'Casca', cls: 'Vanguard', level: 5, sprite: 'casca', portrait: 'casca',
+    // Casca is the chapter 12 boss (Guts walks onto Godot's ship and she
+    // fights him until she recognises him). The boss: true flag is read
+    // by the engine's quote system but is otherwise inert when she's a
+    // player in earlier chapters.
     desc: 'The Hawks\' vanguard commander. Sword and buckler, faster than most men and quicker to anger.',
     stats: s({ hp: 25, str: 7, skl: 10, spd: 11, lck: 7, def: 5, res: 4, mov: 5, con: 6 }),
     growths: g({ hp: 0.70, str: 0.45, skl: 0.60, spd: 0.65, lck: 0.50, def: 0.35, res: 0.40 }),
     items: [{ id: 'iron_sword', uses: 45 }, { id: 'vulnerary', uses: 2 }],
     ai: 'attack',
+    boss: true,
     quotes: { death: 'I had... so much more... to give him...' },
   },
   judeau: {
