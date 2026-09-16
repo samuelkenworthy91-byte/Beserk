@@ -24,7 +24,7 @@ const CHAPTER_SPINE: Record<number, string> = {
   11: 'Fall of the Hawk',
   12: 'Return',
   13: 'The Rescue',
-  14: 'Eclipse',
+  14: 'The Second Eclipse',
 };
 
 export default function TitleScreen({ campaign, suspend, chapters, onNewGame, onResume, onSelectChapter }: {

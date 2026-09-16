@@ -268,6 +268,22 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'It folds in on itself. The hand of the eclipse is still there — but for a moment, the air clears.',
     },
   },
+  // Swarm apostle: chapter 10 boss. The one that has been tracking
+  // Guts for two days. Stronger than a lesser apostle but not as
+  // terrifying as the vortex.
+  a_swarm: {
+    defId: 'a_swarm', name: 'Swarm Apostle', cls: 'Pursuing Demon', level: 8, sprite: 'fighter', portrait: 'soldier',
+    desc: 'The one that has been following him longest. It learnt his pace on the second day. It learnt his sword on the third. It has not yet learnt to stop.',
+    stats: s({ hp: 42, str: 11, skl: 9, spd: 12, lck: 0, def: 7, res: 9, mov: 8, con: 14 }),
+    growths: zero,
+    items: [],
+    ai: 'boss', boss: true,
+    quotes: {
+      battle: 'You walk faster than I do. You swing slower. We will meet, soon, on a day like every other.',
+      rage: 'There is no rage. There is hunger, and there is patience.',
+      death: 'It folds in on itself. The road is finally quiet.',
+    },
+  },
 };
 
 let uidCounter = 1;
