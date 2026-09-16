@@ -41,11 +41,25 @@ describe('characterAssets aggregator', () => {
   });
 
   it('stub-only characters do not throw on boot', () => {
-    // Casca / Judeau / etc. are stubs right now; the aggregator
-    // should call their no-op register functions without crashing.
+    // Judeau / Pippin / Corkus / Rickert / Bazuso / Femto / VoidForm /
+    // Merc / Soldier / Fighter / Archer / C-prefix / A-prefix are
+    // currently stubs; the aggregator should call their no-op
+    // register functions without crashing.
     expect(() => registerAllCharacterAssets()).not.toThrow();
-    // They're not registered because they have no sheets yet.
-    expect(getBattleAsset('casca')).toBeNull();
+    // Stubbed characters do not show up in the asset registry.
+    expect(getBattleAsset('judeau')).toBeNull();
+    expect(getBattleAsset('pippin')).toBeNull();
+    expect(getBattleAsset('bazuso')).toBeNull();
+  });
+
+  it('keeps adding authored entries without losing earlier registrations', () => {
+    registerAllCharacterAssets();
+    // Each authored character must be reachable through the
+    // same getBattleAsset / getPortraitAsset surface.
+    expect(getBattleAsset('guts')?.url).toBe('/sprites/battle/guts.png');
+    expect(getBattleAsset('griffith')?.url).toBe('/sprites/battle/griffith.png');
+    expect(getBattleAsset('casca')?.url).toBe('/sprites/battle/casca.png');
+    expect(getPortraitAsset('casca')?.url).toBe('/portraits/casca.png');
   });
 
   it('preloadAllCharacterAssets tolerates stub modules', async () => {
