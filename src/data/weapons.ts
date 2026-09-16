@@ -38,6 +38,15 @@ export const WEAPONS: Record<string, WeaponDef> = {
     might: 5, hit: 85, crit: 0, weight: 4, minRange: 2, maxRange: 2, uses: 40,
     desc: 'Fires from range 2. Cannot strike adjacent foes.',
   },
+  // Griffith's blade — a slender longsword with duellist reach. Faster than
+  // an iron sword, accurate enough to compensate for raw power. Lower might
+  // than iron sword so duels against Guts read as "Griffith is faster and
+  // can double, but Guts hits like a siege engine and wins slow."
+  rapier: {
+    id: 'rapier', name: 'Rapier', kind: 'weapon', wtype: 'sword',
+    might: 4, hit: 95, crit: 5, weight: 3, minRange: 1, maxRange: 1, uses: 30,
+    desc: 'A duellist\'s blade. Light, accurate, and cruel — built for the long match.',
+  },
 };
 
 export const HEALS: Record<string, HealDef> = {

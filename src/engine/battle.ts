@@ -354,7 +354,7 @@ export class BattleEngine {
 
   previewTarget(enemy: Unit) {
     if (!this.sel) return;
-    const fc = calcForecast(this.sel.unit, enemy, this.map);
+    const fc = calcForecast(this.sel.unit, enemy, this.map, this.units);
     this.targetPreview = { enemy, fc };
     const t = terrainAt(this.map, enemy.x, enemy.y);
     if (t.def > 0 || t.avo > 0) {
@@ -378,7 +378,7 @@ export class BattleEngine {
     const s = this.sel; if (!s) return;
     const foe = enemy ?? this.targetPreview?.enemy;
     if (!foe) return;
-    const plan = planCombat(s.unit, foe, this.map);
+    const plan = planCombat(s.unit, foe, this.map, this.units);
     this.targetPreview = null;
     if (foe.boss && foe.quotes?.battle && !foe.quoteShown) {
       foe.quoteShown = true;
@@ -602,7 +602,7 @@ export class BattleEngine {
         if (!zone.has(key(tgt.x, tgt.y))) continue;
         const ox = foe.x, oy = foe.y;
         foe.x = mx; foe.y = my;
-        const fc = calcForecast(foe, tgt, this.map);
+        const fc = calcForecast(foe, tgt, this.map, this.units);
         foe.x = ox; foe.y = oy;
         const t = terrainAt(this.map, tgt.x, tgt.y);
         const wouldKill = fc.atk.dmg * (fc.atk.double ? 2 : 1) >= tgt.hp;
@@ -618,7 +618,7 @@ export class BattleEngine {
       this.busy = true;
       await this.slideUnit(foe, path);
       this.busy = false;
-      const plan = planCombat(foe, best.tgt, this.map);
+      const plan = planCombat(foe, best.tgt, this.map, this.units);
       await this.runCombat(plan);
     } else if (foe.ai === 'patrol') {
       // Patrol: walk back-and-forth between the current position and a

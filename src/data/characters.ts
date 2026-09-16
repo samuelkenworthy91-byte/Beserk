@@ -50,6 +50,66 @@ export const CHARACTERS: Record<string, CharTemplate> = {
     quotes: { death: 'The ridge... is quiet... at last...' },
   },
 
+  // ─────────── Band of the Hawk (player, from chapter 2 onward) ───────────
+  griffith: {
+    defId: 'griffith', name: 'Griffith', cls: 'Commander', level: 7, sprite: 'griffith', portrait: 'griffith',
+    // COMMAND trait: units within 2 tiles gain +10 Hit / +5 Avoid. The brief
+    // calls this out as the mechanical reason the Band is so deadly around
+    // Griffith, and the player should feel the loss when he falls.
+    desc: 'The White Hawk. COMMAND: units within 2 tiles gain +10 Hit / +5 Avoid / +1 morale. A duellist\'s blade and a leader\'s eye — Griffith is faster than Guts and never misses, but the greatsword is heavier than any sword he can lift.',
+    stats: s({ hp: 30, str: 7, skl: 12, spd: 13, lck: 9, def: 5, res: 6, mov: 6, con: 6 }),
+    growths: g({ hp: 0.70, str: 0.35, skl: 0.70, spd: 0.75, lck: 0.65, def: 0.30, res: 0.50 }),
+    items: [{ id: 'rapier', uses: 30 }, { id: 'vulnerary', uses: 2 }],
+    ai: 'attack',
+    traits: ['command'],
+    quotes: { death: 'My... dream... it ends...?' },
+  },
+  casca: {
+    defId: 'casca', name: 'Casca', cls: 'Vanguard', level: 5, sprite: 'casca', portrait: 'casca',
+    desc: 'The Hawks\' vanguard commander. Sword and buckler, faster than most men and quicker to anger.',
+    stats: s({ hp: 25, str: 7, skl: 10, spd: 11, lck: 7, def: 5, res: 4, mov: 5, con: 6 }),
+    growths: g({ hp: 0.70, str: 0.45, skl: 0.60, spd: 0.65, lck: 0.50, def: 0.35, res: 0.40 }),
+    items: [{ id: 'iron_sword', uses: 45 }, { id: 'vulnerary', uses: 2 }],
+    ai: 'attack',
+    quotes: { death: 'I had... so much more... to give him...' },
+  },
+  judeau: {
+    defId: 'judeau', name: 'Judeau', cls: 'Scout', level: 4, sprite: 'judeau', portrait: 'judeau',
+    desc: 'The Hawks\' scout. Daggers and bad jokes — both sharper than they look.',
+    stats: s({ hp: 21, str: 5, skl: 9, spd: 10, lck: 8, def: 4, res: 4, mov: 6, con: 5 }),
+    growths: g({ hp: 0.65, str: 0.35, skl: 0.55, spd: 0.60, lck: 0.55, def: 0.30, res: 0.40 }),
+    items: [{ id: 'iron_sword', uses: 38 }],
+    ai: 'attack',
+    quotes: { death: 'Tell the captain... I followed the wind...' },
+  },
+  pippin: {
+    defId: 'pippin', name: 'Pippin', cls: 'Heavy', level: 6, sprite: 'pippin', portrait: 'pippin',
+    desc: 'The biggest man in the Band. His axe cuts through anything that doesn\'t move fast enough.',
+    stats: s({ hp: 33, str: 9, skl: 6, spd: 6, lck: 4, def: 8, res: 3, mov: 4, con: 11 }),
+    growths: g({ hp: 0.85, str: 0.55, skl: 0.30, spd: 0.30, lck: 0.25, def: 0.55, res: 0.20 }),
+    items: [{ id: 'iron_axe', uses: 40 }],
+    ai: 'attack',
+    quotes: { death: 'I was... supposed to be... the wall...' },
+  },
+  corkus: {
+    defId: 'corkus', name: 'Corkus', cls: 'Sergeant', level: 4, sprite: 'corkus', portrait: 'corkus',
+    desc: 'The Hawks\' front-row sergeant. Axe and loud mouth — both effective at short range.',
+    stats: s({ hp: 24, str: 8, skl: 6, spd: 7, lck: 5, def: 6, res: 3, mov: 5, con: 8 }),
+    growths: g({ hp: 0.70, str: 0.50, skl: 0.40, spd: 0.40, lck: 0.35, def: 0.45, res: 0.25 }),
+    items: [{ id: 'iron_axe', uses: 42 }],
+    ai: 'attack',
+    quotes: { death: 'Damn... the kid was right about me...' },
+  },
+  rickert: {
+    defId: 'rickert', name: 'Rickert', cls: 'Apprentice', level: 2, sprite: 'rickert', portrait: 'rickert',
+    desc: 'The youngest of the Band. A smith\'s apprentice with a hammer — not a frontline fighter, but worth protecting.',
+    stats: s({ hp: 18, str: 4, skl: 6, spd: 7, lck: 7, def: 4, res: 5, mov: 5, con: 5 }),
+    growths: g({ hp: 0.65, str: 0.40, skl: 0.55, spd: 0.50, lck: 0.60, def: 0.30, res: 0.50 }),
+    items: [{ id: 'iron_sword', uses: 35 }],
+    ai: 'guard',
+    quotes: { death: 'I wanted to... be like them... one day...' },
+  },
+
   // ─────────── enemy cast ───────────
   e_soldier: {
     defId: 'e_soldier', name: 'Soldier', cls: 'Spearman', level: 1, sprite: 'soldier', portrait: 'soldier',

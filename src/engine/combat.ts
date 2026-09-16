@@ -19,9 +19,30 @@ export function effectiveSpd(u: Unit): number {
   return Math.max(0, u.stats.spd - burden);
 }
 
-export const hasTrait = (u: Unit, t: 'sunder' | 'unflinching') => !!u.traits?.includes(t);
+export const hasTrait = (u: Unit, t: 'sunder' | 'unflinching' | 'command') => !!u.traits?.includes(t);
 
-function sideForecast(a: Unit, b: Unit, map: string[]): SideForecast {
+/**
+ * COMMAND bonus — counts how many alive allied units within 2 tiles have
+ * the 'command' trait (typically just Griffith). The bonus applies to the
+ * attacker only; defenders do not benefit from the attacker's leader. This
+ * is the mechanical reason the Band performs so much better around their
+ * captain — when Griffith falls in chapter 11, the rest of the campaign
+ * should feel the difference.
+ */
+function commandBonus(a: Unit, units: Unit[]): { hit: number; crit: number } {
+  let hit = 0, crit = 0;
+  for (const u of units) {
+    if (u === a || u.dead || u.faction !== a.faction) continue;
+    if (!hasTrait(u, 'command')) continue;
+    const d = Math.abs(u.x - a.x) + Math.abs(u.y - a.y);
+    if (d > 2) continue;
+    hit += 10;
+    crit += 2;
+  }
+  return { hit, crit };
+}
+
+function sideForecast(a: Unit, b: Unit, map: string[], units: Unit[]): SideForecast {
   const w = equippedWeapon(a);
   if (!w) return { dmg: 0, hit: 0, crit: 0, double: false, weapon: null };
   const bw = equippedWeapon(b);
@@ -39,10 +60,15 @@ function sideForecast(a: Unit, b: Unit, map: string[]): SideForecast {
   // hidden dice roll, which is a miserable way to lose a tutorial chapter.
   const rage = a.raged ? 2 : 0;
 
+  // COMMAND — an allied leader within 2 tiles grants accuracy and a small
+  // crit bump. The defender's COMMAND does NOT apply when they are
+  // themselves being attacked (it only helps their own attack).
+  const cmd = commandBonus(a, units);
+
   const dmg = Math.max(0, a.stats.str + w.might + rage + tri * 1 - (b.stats.def + tDef));
   const avoidB = effectiveSpd(b) * 2 + b.stats.lck + tAvo;
-  const hit = Math.max(0, Math.min(100, Math.round(w.hit + a.stats.skl * 2 + a.stats.lck / 2 + tri * 15 - avoidB)));
-  const crit = Math.max(0, Math.min(100, Math.round(w.crit + a.stats.skl / 2 - b.stats.lck)));
+  const hit = Math.max(0, Math.min(100, Math.round(w.hit + a.stats.skl * 2 + a.stats.lck / 2 + tri * 15 - avoidB + cmd.hit)));
+  const crit = Math.max(0, Math.min(100, Math.round(w.crit + a.stats.skl / 2 - b.stats.lck + cmd.crit)));
 
   // UNFLINCHING — heavy armour shrugs off flurries; this unit is never doubled.
   const double = !hasTrait(b, 'unflinching') && effectiveSpd(a) >= effectiveSpd(b) + 4;
@@ -50,13 +76,13 @@ function sideForecast(a: Unit, b: Unit, map: string[]): SideForecast {
   return { dmg, hit, crit, double, weapon: w };
 }
 
-export function forecast(a: Unit, b: Unit, map: string[]): Forecast {
-  const atkSide = sideForecast(a, b, map);
+export function forecast(a: Unit, b: Unit, map: string[], units: Unit[] = [a, b]): Forecast {
+  const atkSide = sideForecast(a, b, map, units);
   const dist = Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
   const bw = equippedWeapon(b);
   let defSide: SideForecast | null = null;
   if (bw && bw.uses > 0 && dist >= bw.minRange && dist <= bw.maxRange) {
-    defSide = sideForecast(b, a, map);
+    defSide = sideForecast(b, a, map, units);
   }
   return { atk: atkSide, def: defSide };
 }
@@ -65,8 +91,8 @@ export function forecast(a: Unit, b: Unit, map: string[]): Forecast {
 const roll2rn = (pct: number) => (Math.random() + Math.random()) / 2 * 100 < pct;
 const roll1rn = (pct: number) => Math.random() * 100 < pct;
 
-export function planCombat(a: Unit, b: Unit, map: string[]): CombatPlan {
-  const fc = forecast(a, b, map);
+export function planCombat(a: Unit, b: Unit, map: string[], units: Unit[] = [a, b]): CombatPlan {
+  const fc = forecast(a, b, map, units);
   const rounds: CombatRound[] = [];
   const hpSequence: { a: number; d: number }[] = [];
   let hpA = a.hp, hpB = b.hp;

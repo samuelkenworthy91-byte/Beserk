@@ -54,9 +54,12 @@ export interface Quotes {
 
 // ─── Combat traits ───────────────────────────────────────────────────────────
 // Small, readable modifiers attached to a character. Kept deliberately few.
-//   sunder     — attacks ignore the defender's TERRAIN def/avoid bonuses
-//   unflinching— can never be doubled (fast attackers get one strike only)
-export type Trait = 'sunder' | 'unflinching';
+//   sunder      — attacks ignore the defender's TERRAIN def/avoid bonuses
+//   unflinching — can never be doubled (fast attackers get one strike only)
+//   command     — units within 2 tiles gain +10 Hit / +5 Avoid / +2 Crit
+//                 (Griffith's leadership; the Band fights measurably worse
+//                 without him, per the brief)
+export type Trait = 'sunder' | 'unflinching' | 'command';
 
 // ─── Character template (reusable across chapters) ──────────────────────────
 export interface CharTemplate {

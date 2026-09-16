@@ -158,6 +158,52 @@ describe('counter-attack range', () => {
   });
 });
 
+describe('COMMAND trait — Griffith\'s leadership aura', () => {
+  const MAP = ['....', '....', '....'];
+  it('an ally with command within 2 tiles grants +10 hit and +2 crit', () => {
+    const leader = mkUnit('griffith', 'player', 1, 0);
+    const attacker = mkUnit('casca', 'player', 0, 0);
+    const foe = mkUnit('e_soldier', 'enemy', 0, 1);
+    // with the leader present, hit and crit should be 10 / 2 higher than
+    // the same attacker without one in range
+    const withLeader = forecast(attacker, foe, MAP, [attacker, foe, leader]);
+    const withoutLeader = forecast(attacker, foe, MAP, [attacker, foe]);
+    expect(withLeader.atk.hit).toBe(withoutLeader.atk.hit + 10);
+    expect(withLeader.atk.crit).toBe(withoutLeader.atk.crit + 2);
+  });
+
+  it('a leader on the defender\'s side does NOT boost the attacker', () => {
+    const defenderLeader = mkUnit('griffith', 'enemy', 1, 0);
+    const attacker = mkUnit('casca', 'player', 0, 0);
+    const foe = mkUnit('e_soldier', 'enemy', 0, 1);
+    const withLeader = forecast(attacker, foe, MAP, [attacker, foe, defenderLeader]);
+    const withoutLeader = forecast(attacker, foe, MAP, [attacker, foe]);
+    expect(withLeader.atk.hit).toBe(withoutLeader.atk.hit);
+    expect(withLeader.atk.crit).toBe(withoutLeader.atk.crit);
+  });
+
+  it('a leader more than 2 tiles away does not apply', () => {
+    const leader = mkUnit('griffith', 'player', 0, 5);
+    const attacker = mkUnit('casca', 'player', 0, 0);
+    const foe = mkUnit('e_soldier', 'enemy', 0, 1);
+    const withFarLeader = forecast(attacker, foe, MAP, [attacker, foe, leader]);
+    const alone = forecast(attacker, foe, MAP, [attacker, foe]);
+    expect(withFarLeader.atk.hit).toBe(alone.atk.hit);
+    expect(withFarLeader.atk.crit).toBe(alone.atk.crit);
+  });
+
+  it('a dead leader does not apply', () => {
+    const leader = mkUnit('griffith', 'player', 1, 0);
+    leader.dead = true;
+    const attacker = mkUnit('casca', 'player', 0, 0);
+    const foe = mkUnit('e_soldier', 'enemy', 0, 1);
+    const withDeadLeader = forecast(attacker, foe, MAP, [attacker, foe, leader]);
+    const alone = forecast(attacker, foe, MAP, [attacker, foe]);
+    expect(withDeadLeader.atk.hit).toBe(alone.atk.hit);
+    expect(withDeadLeader.atk.crit).toBe(alone.atk.crit);
+  });
+});
+
 describe('planCombat invariants (200 randomised resolutions)', () => {
   it('never desyncs HP, never goes negative, bounds XP', () => {
     for (let i = 0; i < 200; i++) {
