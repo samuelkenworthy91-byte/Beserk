@@ -13,7 +13,7 @@ import type { ChapterDef } from '../engine/types';
 const CHAPTER_SPINE: Record<number, string> = {
   1: 'The Grey Knight',
   2: 'The White Hawk',
-  3: 'Sword of the Hawks',
+  3: 'The Bridge at Asthoreth',
   4: 'First Command',
   5: 'One Hundred Men',
   6: 'Band of the Hawk',

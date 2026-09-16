@@ -154,6 +154,20 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'The tally... ends at thirty...',
     },
   },
+  // ─────────── Chapter 3 boss: rebel captain at the bridge ───────────
+  c_rebel: {
+    defId: 'c_rebel', name: 'Captain', cls: 'Rebel Captain', level: 4, sprite: 'soldier', portrait: 'soldier',
+    desc: 'A rebel veteran who\'s held this bridge through three kings. Heavy axe, heavy armour, and a habit of standing between his king and the door.',
+    stats: s({ hp: 26, str: 8, skl: 5, spd: 4, lck: 2, def: 6, res: 3, mov: 4, con: 12 }),
+    growths: zero,
+    items: [{ id: 'iron_axe', uses: 40 }],
+    ai: 'boss', boss: true,
+    quotes: {
+      battle: 'You Hawk dogs — we\'ve held this bridge through worse than you. Stand and die.',
+      rage: 'I\'ll not be the first captain to fall to mercenary steel!',
+      death: 'The bridge... is not... yours yet...',
+    },
+  },
 };
 
 let uidCounter = 1;
