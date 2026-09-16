@@ -3,6 +3,7 @@ import TitleScreen from './components/TitleScreen';
 import DialogueScreen from './components/DialogueScreen';
 import BattleScreen, { type BattleResult } from './components/BattleScreen';
 import ResultsScreen from './components/ResultsScreen';
+import { EndScreen } from './components/EndScreen';
 import { CHAPTER_1 } from './data/chapter1';
 import { CHAPTER_2 } from './data/chapter2';
 import { CHAPTER_3 } from './data/chapter3';
@@ -54,6 +55,7 @@ export default function App() {
     | { s: 'dialogue'; chapter: ChapterDef; which: 'intro' | 'outro' }
     | { s: 'battle'; chapter: ChapterDef; c: CampaignSave | null; resume?: BattleSnapshot }
     | { s: 'results'; chapter: ChapterDef; result: BattleResult }
+  | { s: 'end'; campaign: CampaignSave }
   >({ s: 'title' });
 
   const suspend = loadSuspend();
@@ -92,8 +94,25 @@ export default function App() {
     if (which === 'intro') {
       setScreen({ s: 'battle', chapter, c: campaign ?? newCampaign() });
     } else {
-      setScreen({ s: 'title' });
+      // After chapter 14's outro we cut to the epilogue end-screen
+      // instead of returning to the title. The campaign save already
+      // has its trophies + bestiary + fallen entries.
+      if (chapter.id === CHAPTER_14.id) {
+        setScreen({ s: 'end', campaign: campaign ?? newCampaign() });
+      } else {
+        setScreen({ s: 'title' });
+      }
     }
+  };
+
+  // Reset the campaign for a fresh playthrough. The Hawk will fly again.
+  const beginNewJourney = () => {
+    sfx.confirm();
+    clearSuspend();
+    const c = newCampaign();
+    saveCampaign(c);
+    setCampaign(c);
+    setScreen({ s: 'title' });
   };
 
   const onVictory = (chapter: ChapterDef, result: BattleResult) => {
@@ -161,6 +180,12 @@ export default function App() {
           chapter={screen.chapter}
           result={screen.result}
           onContinue={() => setScreen({ s: 'dialogue', chapter: screen.chapter, which: 'outro' })}
+        />
+      )}
+      {screen.s === 'end' && (
+        <EndScreen
+          campaign={screen.campaign}
+          onRestart={beginNewJourney}
         />
       )}
     </div>

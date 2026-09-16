@@ -199,3 +199,163 @@ html, body, #root {
 
 * { scrollbar-width: none; }
 *::-webkit-scrollbar { display: none; }
+
+/* ─────────────────── end screen ─────────────────── */
+
+.end-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(8, 12, 22, .96) 0%, rgba(2, 3, 8, 1) 70%),
+    linear-gradient(180deg, #06080d 0%, #0a0d18 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5vh 6vw;
+  animation: fade-in 800ms ease-out both;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.end-frame {
+  position: relative;
+  max-width: 760px;
+  width: 100%;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 40px 32px;
+  border-radius: 14px;
+  background: rgba(12, 14, 22, .65);
+  border: 1px solid rgba(255, 255, 255, .04);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, .55);
+}
+
+.end-frame__tone {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  pointer-events: none;
+  opacity: .28;
+  transition: background 600ms ease;
+}
+.end-frame__tone[data-tone='farewell']  { background: radial-gradient(circle at 50% 18%, rgba(120, 140, 180, .32) 0%, transparent 60%); }
+.end-frame__tone[data-tone='promise']   { background: radial-gradient(circle at 50% 18%, rgba(180, 150, 110, .32) 0%, transparent 60%); }
+.end-frame__tone[data-tone='closing']   { background: radial-gradient(circle at 50% 18%, rgba(190, 110, 110, .35) 0%, transparent 60%); }
+.end-frame__tone[data-tone='narration'] { background: radial-gradient(circle at 50% 18%, rgba(160, 160, 180, .22) 0%, transparent 60%); }
+
+.end-frame__speaker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.end-frame__speaker--empty {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, .03);
+  border: 1px dashed rgba(255, 255, 255, .12);
+  color: rgba(255, 255, 255, .4);
+  font-size: 14px;
+  font-style: italic;
+}
+.end-frame__name {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 22px;
+  letter-spacing: .08em;
+  color: rgba(255, 255, 255, .85);
+}
+
+.end-frame__quote {
+  margin: 0;
+  max-width: 580px;
+  text-align: center;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 19px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, .92);
+  font-style: italic;
+  border: none;
+  padding: 0 8px;
+}
+
+.end-frame__hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, .45);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.end-frame__next,
+.end-frame__restart {
+  font-family: inherit;
+  font-size: 16px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, .25);
+  background: rgba(255, 255, 255, .04);
+  color: rgba(255, 255, 255, .92);
+  cursor: pointer;
+  transition: background 180ms ease, transform 180ms ease;
+  min-height: 48px;
+  min-width: 220px;
+}
+.end-frame__next:hover,
+.end-frame__restart:hover {
+  background: rgba(255, 255, 255, .12);
+  transform: translateY(-1px);
+}
+.end-frame__next:focus,
+.end-frame__restart:focus {
+  outline: 2px solid rgba(255, 255, 255, .55);
+  outline-offset: 3px;
+}
+
+.end-frame__closing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.end-frame__closing-line {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 28px;
+  letter-spacing: .22em;
+  color: rgba(255, 255, 255, .8);
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+}
+.end-frame__restart-hint {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, .42);
+  font-style: italic;
+  text-align: center;
+}
+
+.end-summary {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, .72);
+  max-width: 420px;
+}
+.end-summary li strong {
+  color: rgba(255, 255, 255, .9);
+  letter-spacing: .04em;
+  margin-right: 6px;
+}
