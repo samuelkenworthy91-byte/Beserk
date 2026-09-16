@@ -26,7 +26,7 @@ import {
   type BattleSnapshot, type CampaignSave,
 } from './engine/save';
 import { sfx } from './engine/sfx';
-import { registerGutsAssets, preloadGutsAssets } from './gfx/gutsAssets';
+import { registerAllCharacterAssets, preloadAllCharacterAssets } from './gfx/characterAssets';
 import campBg from './assets/camp_bg.jpg';
 import titleBg from './assets/title_bg.jpg';
 
@@ -50,12 +50,13 @@ const CHAPTERS: Record<number, ChapterDef> = {
 export { CHAPTERS };
 
 export default function App() {
-  // Register the external Guts sprite sheets on mount and kick off a
-  // background preload. The renderers consult the registry first and
-  // fall back to the code-authored frames until each sheet decodes.
+  // Register every per-character external sprite sheet on mount and
+  // kick off a background preload. The renderers consult the
+  // registry first and fall back to the code-authored frames until
+  // each sheet decodes.
   useEffect(() => {
-    registerGutsAssets();
-    void preloadGutsAssets();
+    registerAllCharacterAssets();
+    void preloadAllCharacterAssets();
   }, []);
 
   const [campaign, setCampaign] = useState<CampaignSave | null>(() => loadCampaign());
