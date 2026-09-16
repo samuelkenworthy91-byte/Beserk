@@ -499,7 +499,9 @@ export const PALETTES: Record<string, Palette> = {
 // Patches only ever draw OVER features; '.' and ' ' leave the base untouched.
 // ═════════════════════════════════════════════════════════════════════════════
 
-export type Expression = 'neutral' | 'angry' | 'injured' | 'shocked';
+export type Expression =
+  | 'neutral' | 'angry' | 'injured' | 'shocked'
+  | 'grim' | 'shouting' | 'eyes-closed' | 'side-glance' | 'determined' | 'wounded';
 export interface Patch { x: number; y: number; m: Rows }
 
 const ANGRY_BROW: Patch = {
@@ -560,6 +562,15 @@ export const EXPRESSIONS: Record<Expression, Patch[]> = {
   angry: [ANGRY_BROW, ANGRY_MOUTH],
   injured: [INJURED_EYES, INJURED_MOUTH],
   shocked: [SHOCKED_EYES, SHOCKED_MOUTH],
+  // extended expressions — supported by external sprite sheets; the
+  // code-authored fallback has no patches for these, so they
+  // resolve to the same neutral base.
+  grim: [],
+  shouting: [SHOCKED_EYES, SHOCKED_MOUTH],
+  'eyes-closed': [],
+  'side-glance': [],
+  determined: [],
+  wounded: [INJURED_EYES, INJURED_MOUTH],
 };
 
 // ═════════════════════════════════════════════════════════════════════════════

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TitleScreen from './components/TitleScreen';
 import DialogueScreen from './components/DialogueScreen';
 import BattleScreen, { type BattleResult } from './components/BattleScreen';
@@ -26,6 +26,7 @@ import {
   type BattleSnapshot, type CampaignSave,
 } from './engine/save';
 import { sfx } from './engine/sfx';
+import { registerGutsAssets, preloadGutsAssets } from './gfx/gutsAssets';
 import campBg from './assets/camp_bg.jpg';
 import titleBg from './assets/title_bg.jpg';
 
@@ -49,6 +50,14 @@ const CHAPTERS: Record<number, ChapterDef> = {
 export { CHAPTERS };
 
 export default function App() {
+  // Register the external Guts sprite sheets on mount and kick off a
+  // background preload. The renderers consult the registry first and
+  // fall back to the code-authored frames until each sheet decodes.
+  useEffect(() => {
+    registerGutsAssets();
+    void preloadGutsAssets();
+  }, []);
+
   const [campaign, setCampaign] = useState<CampaignSave | null>(() => loadCampaign());
   const [screen, setScreen] = useState<
     | { s: 'title' }
