@@ -183,6 +183,21 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'The kingdom... will remember...',
     },
   },
+  // ─────────── Chapter 5 boss: knight-commander at Varn ───────────
+  c_knight: {
+    defId: 'c_knight', name: 'Sir Borcas', cls: 'Knight-Commander', level: 6, sprite: 'soldier', portrait: 'soldier',
+    desc: 'A knight-commander who has fought in the Hundred-Year War. UNFLINCHING: no enemy doubles him. He refuses to yield the keep and refuses to fall.',
+    stats: s({ hp: 36, str: 9, skl: 8, spd: 6, lck: 3, def: 9, res: 5, mov: 5, con: 14 }),
+    growths: zero,
+    items: [{ id: 'iron_lance', uses: 30 }, { id: 'iron_sword', uses: 30 }],
+    ai: 'boss', boss: true,
+    traits: ['unflinching'],
+    quotes: {
+      battle: 'The Band of the Hawk — I\'ve heard that name once, at a peace treaty. I will not hear it twice.',
+      rage: 'Hold this line, men! The walls will hold! The walls will — ',
+      death: 'The walls... the walls always held...',
+    },
+  },
 };
 
 let uidCounter = 1;
