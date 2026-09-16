@@ -226,6 +226,21 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'The fire... was never lit...',
     },
   },
+  // ─────────── Chapter 8 boss: Boscogn the Marshal at Doldrey ───────────
+  c_marshal: {
+    defId: 'c_marshal', name: 'Boscogn', cls: 'Marshal of Doldrey', level: 8, sprite: 'warlord', portrait: 'bazuso',
+    desc: 'The marshal of a hundred thousand. UNFLINCHING: no enemy doubles him. His greatsword is older than this war. He has held this fortress longer than Griffith has been alive.',
+    stats: s({ hp: 48, str: 12, skl: 8, spd: 5, lck: 2, def: 11, res: 6, mov: 5, con: 16 }),
+    growths: zero,
+    items: [{ id: 'steel_axe', uses: 30 }, { id: 'iron_sword', uses: 30 }],
+    ai: 'boss', boss: true,
+    traits: ['unflinching'],
+    quotes: {
+      battle: 'The Band of the Hawk — I have heard that name at treaty tables. You are children with a sword. This fortress has held for a hundred years.',
+      rage: 'You are nothing! You are a child with an axe! I will kill you and the war will end here!',
+      death: 'A hundred years... a hundred years the gate... the gate held...',
+    },
+  },
 };
 
 let uidCounter = 1;
