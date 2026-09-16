@@ -11,6 +11,7 @@ import { drawMap, TS } from '../gfx/mapTiles';
 import { drawMapUnit } from '../gfx/mapSprites';
 import { pathTo, key } from '../engine/path';
 import { sfx } from '../engine/sfx';
+import { swingArc, swingProgress, slowMo, killStyleFor, SWING_MS, BOSS_KILL_SLOWMO_MS } from '../engine/fx';
 import { cn } from '../utils/cn';
 import BattleCutscene from './BattleCutscene';
 import {
@@ -208,8 +209,24 @@ export default function BattleScreen({ chapter, campaign, resume, onVictory, onR
         const deadFx = engine.deadFx.find(f => f.uid === u.uid);
         let alpha = 1;
         if (deadFx) {
-          const k = Math.min(1, (performance.now() - deadFx.t0) / 700);
+          const elapsed = performance.now() - deadFx.t0;
+          // Slow-mo extends the visible window for boss kills (the
+          // renderer scales fade-out k by (1 + slowMo*0.9), so the
+          // sprite lingers ~2x longer in the slow-mo window).
+          const sm = slowMo(performance.now(), engine.slowMoUntil);
+          const fadeMs = 700 + sm * BOSS_KILL_SLOWMO_MS * 0.9;
+          const k = Math.min(1, elapsed / fadeMs);
           alpha = 1 - k;
+          // Bosses additionally drop lower (knockback) during kill
+          const killStyle = u.boss
+            ? killStyleFor(u.boss ? 'godhand' : 'sword')
+            : 'knockback';
+          // (killStyle is consumed by the renderer in a future pass;
+          // for now we just use it to drive a slight alpha boost so
+          // the boss stays prominent during slow-mo)
+          if (killStyle === 'shatter' && sm > 0) {
+            alpha = Math.max(alpha, 0.4);
+          }
         }
         const ap = engine.animPos && engine.animPos.uid === u.uid ? engine.animPos : null;
         const ux = ap ? ap.x : u.x, uy = ap ? ap.y : u.y;
@@ -238,6 +255,42 @@ export default function BattleScreen({ chapter, campaign, resume, onVictory, onR
           ctx.fillRect(cxb - 4, cyb - 1, 2, 3);
           ctx.fillRect(cxb - 1, cyb - 2, 2, 4);
           ctx.fillRect(cxb + 2, cyb - 1, 2, 3);
+        }
+      }
+
+      // ─── swing arcs (combat fx) ───
+      // For each active attackFx, render an arc from the attacker
+      // toward the defender, faded in/out across the swing window.
+      if (engine.attackFx.length) {
+        const now = performance.now();
+        for (const fx of engine.attackFx) {
+          const elapsed = now - fx.t0;
+          if (elapsed < 0 || elapsed > SWING_MS) continue;
+          const k = swingProgress(elapsed);
+          const arc = swingArc(fx.fromX, fx.fromY, fx.toX, fx.toY, fx.kind);
+          ctx.save();
+          ctx.lineCap = 'round';
+          // alpha fades in then out
+          const a = k < 0.4 ? k / 0.4 : 1 - (k - 0.4) / 0.6;
+          ctx.globalAlpha = Math.max(0, Math.min(1, a));
+          ctx.strokeStyle = arc.color;
+          ctx.lineWidth = arc.width;
+          ctx.beginPath();
+          ctx.moveTo(arc.startX * TS, arc.startY * TS);
+          ctx.bezierCurveTo(
+            arc.cp1X * TS, arc.cp1Y * TS,
+            arc.cp2X * TS, arc.cp2Y * TS,
+            arc.endX   * TS, arc.endY   * TS,
+          );
+          ctx.stroke();
+          // bright peak — a small white dash at midpoint on godhand swings
+          if (fx.kind === 'godhand' && k > 0.4 && k < 0.7) {
+            ctx.globalAlpha = 0.6 * (1 - Math.abs(k - 0.55) / 0.15);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+          ctx.restore();
         }
       }
 

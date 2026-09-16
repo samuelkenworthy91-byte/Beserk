@@ -2,6 +2,7 @@ import type {
   ChapterDef, CombatPlan, Forecast, ItemStack, Unit,
 } from './types';
 import { movementRange, attackFrom, threatZone, pathTo, key, type MoveMap } from './path';
+import { fxKindFor, BOSS_KILL_SLOWMO_MS, type FxKind } from './fx';
 import { forecast as calcForecast, planCombat, equippedWeapon, grantExp } from './combat';
 import { terrainAt } from './terrain';
 import { mkUnit, resetUids } from '../data/characters';
@@ -55,6 +56,11 @@ export class BattleEngine {
   // ephemeral render state
   animPos: { uid: number; x: number; y: number } | null = null;
   deadFx: { uid: number; t0: number }[] = [];
+  attackFx: { uid: number; t0: number; kind: FxKind;
+              fromX: number; fromY: number;
+              toX: number; toY: number }[] = [];
+  /** Timestamp until which the renderer should slow down (boss kill). */
+  slowMoUntil = 0;
   cutData: CutData | null = null;
   danger: Set<string> | null = null;
   dangerForUid = -1;
@@ -432,6 +438,23 @@ export class BattleEngine {
     this.mode = 'anim';
     this.cutData = { plan };
     this.combatCount++;
+    // Drop a swing-arc fx for each side at the start of combat. The
+    // renderer will paint an arc from each attacker toward their
+    // defender over the swing window.
+    this.attackFx.push({
+      uid: plan.attacker.uid,
+      t0: performance.now(),
+      kind: fxKindFor(plan.attacker.cls),
+      fromX: plan.attacker.x, fromY: plan.attacker.y,
+      toX: plan.defender.x, toY: plan.defender.y,
+    });
+    this.attackFx.push({
+      uid: plan.defender.uid,
+      t0: performance.now() + 80,   // defender counters a beat later
+      kind: fxKindFor(plan.defender.cls),
+      fromX: plan.defender.x, fromY: plan.defender.y,
+      toX: plan.attacker.x, toY: plan.attacker.y,
+    });
     this.onChange();
     return new Promise<void>(res => { this.cutResolve = res; });
   }
@@ -525,6 +548,10 @@ export class BattleEngine {
       }
     }
     if (u.defId === this.chapter.bossDefId) {
+      // Slow-mo window for cinematic boss-kill. The renderer scales
+      // dt by the inverse of the slow-mo factor so the player gets
+      // a beat to absorb the kill.
+      this.slowMoUntil = performance.now() + BOSS_KILL_SLOWMO_MS;
       this.events.push({ type: 'victory' });
     }
   }
