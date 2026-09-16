@@ -281,6 +281,14 @@ export class BattleEngine {
 
   private async slideUnit(u: Unit, path: [number, number][]) {
     if (!path.length) return;
+    // requestAnimationFrame is a browser API. When the engine runs under
+    // node (vitest, scripts) it is missing — fall back to a setTimeout-based
+    // shim that yields to the microtask queue at the same cadence, so the
+    // tests don't crash and headless tooling still ticks.
+    const raf: (cb: () => void) => void =
+      typeof requestAnimationFrame === 'function'
+        ? requestAnimationFrame
+        : (cb: () => void) => setTimeout(cb, 16) as unknown as number;
     for (const [nx, ny] of path) {
       const sx = u.x, sy = u.y;
       const D = 82;
@@ -289,9 +297,9 @@ export class BattleEngine {
         const step = () => {
           const k = Math.min(1, (performance.now() - t0) / D);
           this.animPos = { uid: u.uid, x: sx + (nx - sx) * k, y: sy + (ny - sy) * k };
-          if (k < 1) requestAnimationFrame(step); else res();
+          if (k < 1) raf(step); else res();
         };
-        requestAnimationFrame(step);
+        raf(step);
       });
       u.x = nx; u.y = ny;
       sfx.cursor();
