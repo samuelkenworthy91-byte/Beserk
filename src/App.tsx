@@ -4,6 +4,7 @@ import DialogueScreen from './components/DialogueScreen';
 import BattleScreen, { type BattleResult } from './components/BattleScreen';
 import ResultsScreen from './components/ResultsScreen';
 import { CHAPTER_1 } from './data/chapter1';
+import { CHAPTER_2 } from './data/chapter2';
 import type { ChapterDef } from './engine/types';
 import {
   loadCampaign, saveCampaign, clearCampaign, newCampaign,
@@ -15,7 +16,10 @@ import campBg from './assets/camp_bg.jpg';
 import titleBg from './assets/title_bg.jpg';
 
 // Chapter registry — new campaign content registers here.
-const CHAPTERS: Record<number, ChapterDef> = { [CHAPTER_1.id]: CHAPTER_1 };
+const CHAPTERS: Record<number, ChapterDef> = {
+  [CHAPTER_1.id]: CHAPTER_1,
+  [CHAPTER_2.id]: CHAPTER_2,
+};
 export { CHAPTERS };
 
 export default function App() {
@@ -100,6 +104,7 @@ export default function App() {
         <TitleScreen
           campaign={campaign}
           suspend={suspend}
+          chapters={CHAPTERS}
           onNewGame={newGame}
           onResume={resumeBattle}
           onSelectChapter={selectChapter}

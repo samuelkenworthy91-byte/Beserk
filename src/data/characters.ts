@@ -53,16 +53,21 @@ export const CHARACTERS: Record<string, CharTemplate> = {
   // ─────────── Band of the Hawk (player, from chapter 2 onward) ───────────
   griffith: {
     defId: 'griffith', name: 'Griffith', cls: 'Commander', level: 7, sprite: 'griffith', portrait: 'griffith',
-    // COMMAND trait: units within 2 tiles gain +10 Hit / +5 Avoid. The brief
+    // COMMAND trait: units within 2 tiles gain +10 Hit / +2 Crit. The brief
     // calls this out as the mechanical reason the Band is so deadly around
     // Griffith, and the player should feel the loss when he falls.
-    desc: 'The White Hawk. COMMAND: units within 2 tiles gain +10 Hit / +5 Avoid / +1 morale. A duellist\'s blade and a leader\'s eye — Griffith is faster than Guts and never misses, but the greatsword is heavier than any sword he can lift.',
+    desc: 'The White Hawk. COMMAND: units within 2 tiles gain +10 Hit / +2 Crit. A duellist\'s blade and a leader\'s eye — Griffith is faster than Guts and never misses, but the greatsword is heavier than any sword he can lift.',
     stats: s({ hp: 30, str: 7, skl: 12, spd: 13, lck: 9, def: 5, res: 6, mov: 6, con: 6 }),
     growths: g({ hp: 0.70, str: 0.35, skl: 0.70, spd: 0.75, lck: 0.65, def: 0.30, res: 0.50 }),
     items: [{ id: 'rapier', uses: 30 }, { id: 'vulnerary', uses: 2 }],
     ai: 'attack',
+    boss: true,
     traits: ['command'],
-    quotes: { death: 'My... dream... it ends...?' },
+    quotes: {
+      battle: 'A large sword… I haven\'t seen one swung like that since the Hundred-Year War.',
+      rage: 'I won\'t grant you the release of dying for yourself. Die for me — that\'s an order.',
+      death: '…One day, I will have a kingdom. And you will remember this road.',
+    },
   },
   casca: {
     defId: 'casca', name: 'Casca', cls: 'Vanguard', level: 5, sprite: 'casca', portrait: 'casca',

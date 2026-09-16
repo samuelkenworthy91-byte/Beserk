@@ -8,14 +8,29 @@ import titleBg from '../assets/title_bg.jpg';
 
 // ─── Title screen: New Game / Resume / Chapter Select / Field Guide ──────────
 
-const CHAPTER_SPINE = [
-  'The Grey Knight', 'The Hawk Descends', 'Sword of the Hawks', 'The Golden Age',
-  'Doldrey¹', '…the chronicle waits.', '', '', '', '', '', '', '', '',
-];
+import type { ChapterDef } from '../engine/types';
 
-export default function TitleScreen({ campaign, suspend, onNewGame, onResume, onSelectChapter }: {
+const CHAPTER_SPINE: Record<number, string> = {
+  1: 'The Grey Knight',
+  2: 'The White Hawk',
+  3: 'Sword of the Hawks',
+  4: 'First Command',
+  5: 'One Hundred Men',
+  6: 'Band of the Hawk',
+  7: 'The Fortress',
+  8: 'The Golden Age',
+  9: 'Bonfire of Dreams',
+  10: 'Departure',
+  11: 'Fall of the Hawk',
+  12: 'Return',
+  13: 'The Rescue',
+  14: 'Eclipse',
+};
+
+export default function TitleScreen({ campaign, suspend, chapters, onNewGame, onResume, onSelectChapter }: {
   campaign: CampaignSave | null;
   suspend: SuspendSave | null;
+  chapters: Record<number, ChapterDef>;
   onNewGame: () => void;
   onResume: () => void;
   onSelectChapter: (id: number) => void;
@@ -95,7 +110,7 @@ export default function TitleScreen({ campaign, suspend, onNewGame, onResume, on
             </div>
             <div className="overflow-y-auto px-3 pb-3 flex flex-col gap-2">
               {Array.from({ length: 14 }, (_, i) => i + 1).map(id => {
-                const exists = id === 1;
+                const exists = !!chapters[id];
                 const locked = id > unlocked;
                 return (
                   <button key={id} disabled={locked || !exists}
@@ -107,7 +122,7 @@ export default function TitleScreen({ campaign, suspend, onNewGame, onResume, on
                       Chapter {id}
                     </span>
                     <span className="text-[11px] opacity-80 truncate max-w-[45%]">
-                      {exists ? CHAPTER_SPINE[0] ?? '' : locked ? '???' : 'sealed'}
+                      {exists ? CHAPTER_SPINE[id] ?? '???' : locked ? '???' : 'sealed'}
                     </span>
                   </button>
                 );
