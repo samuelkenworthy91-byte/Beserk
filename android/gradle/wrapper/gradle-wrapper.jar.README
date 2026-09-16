@@ -1,0 +1,19 @@
+gradle-wrapper.jar — placeholder
+================================
+
+This jar is normally committed alongside `gradlew` so the wrapper
+can download the requested gradle distribution. We can't ship the
+binary here (no upstream copy is bundled with this repository).
+
+To populate it once:
+
+  # install gradle (any way: brew, sdkman, Android Studio's bundled
+  # gradle, etc.). Then in this directory:
+  gradle wrapper --gradle-version 8.11.1
+
+That creates `gradle-wrapper.jar` here. After that, `./gradlew` works
+without a system gradle — the wrapper self-bootstraps.
+
+If you're using Android Studio, you can also open the `android/`
+folder as a project and the IDE will offer to fix the wrapper for
+you (File → Sync with File System → "Use Gradle wrapper").
