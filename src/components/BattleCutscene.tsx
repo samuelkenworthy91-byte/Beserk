@@ -113,6 +113,11 @@ export default function BattleCutscene({ plan, map, weather, onRound, onDone }: 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const skipRef = useRef<() => void>(() => { });
+  const skipAllRef = useRef<() => void>(() => { });
+  // Double-tap detection — two taps within 280ms skip the whole cutscene
+  // to its final frame. The single-tap path still advances one beat at a
+  // time so the player can pace themselves through the choreography.
+  const lastTapRef = useRef<number>(0);
 
   useEffect(() => {
     const cv = canvasRef.current!;
@@ -211,6 +216,11 @@ export default function BattleCutscene({ plan, map, weather, onRound, onDone }: 
     let slash: { t0: number; dur: number; who: 'a' | 'd'; from: number; to: number; feel: Feel } | null = null;
     let arrow: { t0: number; dur: number; who: 'a' | 'd' } | null = null;
     let shakeT = -9999, shakeAmp = 0, shakeDir = 1, shakeDur = 170;
+    // lens punch: a brief 6% scale + translation toward the impact point.
+    // Distinct from the directional shake: shake jitters the canvas while
+    // the lens punch squashes it, so the heaviest hits feel like the
+    // camera lurches toward the blow instead of just vibrating.
+    let lensT = -9999, lensAmp = 0, lensCx = 0, lensCy = 0, lensDur = 220;
     let critFlashT = -9999;
     let impactRing: { x: number; y: number; t0: number; big: boolean } | null = null;
     let koT = -1;
@@ -231,6 +241,12 @@ export default function BattleCutscene({ plan, map, weather, onRound, onDone }: 
       setTimeout(step, 8);
     });
     skipRef.current = () => resolver?.();
+    skipAllRef.current = () => {
+      // jump the virtual clock far enough ahead that the run() loop's wait
+      // targets all resolve immediately; onDone() then runs through finishCombat
+      vClock = 999999;
+      resolver?.();
+    };
     const frame = () => new Promise<void>(res => requestAnimationFrame(() => res()));
 
     const easeOutQ = (k: number) => 1 - (1 - k) * (1 - k);
@@ -281,6 +297,10 @@ export default function BattleCutscene({ plan, map, weather, onRound, onDone }: 
 
     function punch(amp: number, dir: number, dur: number) {
       shakeT = vClock; shakeAmp = amp; shakeDir = dir; shakeDur = dur;
+    }
+
+    function lensPunch(amp: number, cx: number, cy: number, dur: number) {
+      lensT = vClock; lensAmp = amp; lensCx = cx; lensCy = cy; lensDur = dur;
     }
 
     // ── choreography ─────────────────────────────────────────────────────────
@@ -354,6 +374,13 @@ export default function BattleCutscene({ plan, map, weather, onRound, onDone }: 
 
           punch(F.shake * (r.crit ? 1.7 : 1) + Math.min(3, r.dmg * 0.1),
             dir, r.crit ? 210 : 165);
+
+          // lens punch: 6% scale toward the impact, longest on heavy weapons
+          // and crits. Combined with the directional shake, this reads as
+          // the camera lurching at the blow rather than just vibrating.
+          const lensScale = F.sparks > 12 ? 0.08 : F.sparks > 7 ? 0.055 : 0.035;
+          lensPunch(lensScale + (r.crit ? 0.025 : 0),
+            foe.x - dir * 8, chestY + 4, 220 + (r.crit ? 40 : 0));
 
           spawnSparks(foe.x - dir * 8, chestY + 2, F.sparks + (r.crit ? 10 : 0), dir);
           spawnBlood(foe.x - dir * 6, chestY,
@@ -890,13 +917,30 @@ export default function BattleCutscene({ plan, map, weather, onRound, onDone }: 
 
       // ── camera punch: directional impulse, short and hard ──
       const sk = vClock - shakeT;
+      let ox = 0, oy = 0;
       if (sk >= 0 && sk < shakeDur) {
         const decay = (1 - sk / shakeDur) ** 2;
         const osc = Math.sin((sk / shakeDur) * Math.PI * 5);
-        const ox = shakeDir * shakeAmp * osc * decay;
-        const oy = shakeAmp * 0.5 * Math.sin((sk / shakeDur) * Math.PI * 7) * decay;
-        ctx.setTransform(1, 0, 0, 1, Math.round(ox), Math.round(oy));
+        ox = shakeDir * shakeAmp * osc * decay;
+        oy = shakeAmp * 0.5 * Math.sin((sk / shakeDur) * Math.PI * 7) * decay;
       }
+
+      // ── lens punch: 1-frame scale around the impact point. Falls back to
+      //   identity by the time the recover frame paints, so it never stacks
+      //   across hits. Applied AFTER the shake so the shake still jitters.
+      const lk = vClock - lensT;
+      let scale = 1, sCentreX = 0, sCentreY = 0;
+      if (lk >= 0 && lk < lensDur) {
+        const k = lk / lensDur;
+        // ease-out: most of the punch in the first 35% of the duration, then
+        // smooth resolution back to identity so it doesn't read as a wobble
+        const punch = (1 - k) * (1 - k * 0.6);
+        scale = 1 + lensAmp * punch;
+        sCentreX = lensCx;
+        sCentreY = lensCy;
+      }
+
+      ctx.setTransform(scale, 0, 0, scale, ox - sCentreX * (scale - 1), oy - sCentreY * (scale - 1));
 
       // ── sky ──
       const sky = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
@@ -1108,7 +1152,12 @@ export default function BattleCutscene({ plan, map, weather, onRound, onDone }: 
 
   return (
     <div className="absolute inset-0 z-30 bg-[#05060a] overflow-hidden"
-      onPointerDown={() => skipRef.current()}>
+      onPointerDown={() => {
+        const now = performance.now();
+        if (now - lastTapRef.current < 280) skipAllRef.current();
+        else skipRef.current();
+        lastTapRef.current = now;
+      }}>
       <div
         ref={wrapRef}
         className="absolute inset-0"
