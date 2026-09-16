@@ -348,23 +348,33 @@ function sprite(look: string, faction: Faction, frame: number, grey: boolean): H
         ? ['idle-front', 'idle-right', 'idle-back', 'idle-left'] as MapFrameName[]
         : ['walkA-front', 'walkA-right', 'walkA-back', 'walkA-left'] as MapFrameName[];
       const col = mapColFor(frameOrder, half[0]);
-      const cellW = asset.sheet.kind === 'strip' ? asset.sheet.cellW : asset.sheet.cellW;
-      const cellH = asset.sheet.kind === 'strip' ? asset.sheet.cellH : asset.sheet.cellH;
-      const sx = col * cellW;
+      const srcW = asset.sheet.kind === 'strip' ? asset.sheet.cellW : asset.sheet.cellW;
+      const srcH = asset.sheet.kind === 'strip' ? asset.sheet.cellH : asset.sheet.cellH;
+      const sx = col * srcW;
+      // Output canvas is always SPR_W × SPR_H (22×30) so the rest of
+      // the pipeline (drawMapUnit's offset math, ground shadow, ring)
+      // stays correct. Letterbox the slice to fit.
       const k = `ext|${look}|${faction}|${frame}|${grey}`;
       let cv = cache.get(k);
       if (!cv) {
         cv = document.createElement('canvas');
-        cv.width = cellW; cv.height = cellH;
+        cv.width = SPR_W; cv.height = SPR_H;
         const g = cv.getContext('2d')!;
         g.imageSmoothingEnabled = false;
+        // fit the source slice into the 22×30 box, centred at the
+        // bottom so feet stay anchored to the tile baseline.
+        const scale = Math.min(SPR_W / srcW, SPR_H / srcH);
+        const dw = Math.round(srcW * scale);
+        const dh = Math.round(srcH * scale);
+        const dx = Math.round((SPR_W - dw) / 2);
+        const dy = SPR_H - dh;
         if (grey) {
           const tmp = document.createElement('canvas');
-          tmp.width = cellW; tmp.height = cellH;
+          tmp.width = dw; tmp.height = dh;
           const tg = tmp.getContext('2d')!;
           tg.imageSmoothingEnabled = false;
-          tg.drawImage(img, sx, 0, cellW, cellH, 0, 0, cellW, cellH);
-          const id = tg.getImageData(0, 0, cellW, cellH);
+          tg.drawImage(img, sx, 0, srcW, srcH, 0, 0, dw, dh);
+          const id = tg.getImageData(0, 0, dw, dh);
           const d = id.data;
           for (let i = 0; i < d.length; i += 4) {
             if (d[i + 3] < 128) continue;
@@ -374,9 +384,9 @@ function sprite(look: string, faction: Faction, frame: number, grey: boolean): H
             d[i + 2] = Math.round(d[i + 2] * n + 54 * (1 - n));
           }
           tg.putImageData(id, 0, 0);
-          g.drawImage(tmp, 0, 0);
+          g.drawImage(tmp, dx, dy);
         } else {
-          g.drawImage(img, sx, 0, cellW, cellH, 0, 0, cellW, cellH);
+          g.drawImage(img, sx, 0, srcW, srcH, dx, dy, dw, dh);
         }
         cache.set(k, cv);
       }

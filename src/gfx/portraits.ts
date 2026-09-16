@@ -231,10 +231,16 @@ export function getPortrait(
       const cellW = asset.sheet.kind === 'strip' ? asset.sheet.cellW : asset.sheet.cellW;
       const cellH = asset.sheet.kind === 'strip' ? asset.sheet.cellH : asset.sheet.cellH;
       const sx = col * cellW;
+      // Output is always a square SIZE×SIZE canvas so the rest of the
+      // pipeline (paintPortrait / DialogueScreen) can scale it as a
+      // square. We letterbox the slice so non-square source cells
+      // render centered without distortion.
       const cv = document.createElement('canvas');
-      cv.width = cellW; cv.height = cellH;
+      cv.width = SIZE; cv.height = SIZE;
       const g = cv.getContext('2d')!;
       g.imageSmoothingEnabled = false;
+      const dx = Math.round((SIZE - cellW) / 2);
+      const dy = Math.round((SIZE - cellH) / 2);
       if (dim) {
         const tint = document.createElement('canvas');
         tint.width = cellW; tint.height = cellH;
@@ -253,12 +259,16 @@ export function getPortrait(
           d[i + 2] = Math.round(d[i + 2] * 0.62 + 48 * 0.38);
         }
         tg.putImageData(id, 0, 0);
-        g.drawImage(tint, 0, 0);
+        g.drawImage(tint, dx, dy);
       } else if (flip) {
-        g.translate(cellW, 0); g.scale(-1, 1);
+        g.save();
+        g.translate(dx + cellW / 2, dy + cellH / 2);
+        g.scale(-1, 1);
+        g.translate(-cellW / 2, -cellH / 2);
         g.drawImage(img, sx, 0, cellW, cellH, 0, 0, cellW, cellH);
+        g.restore();
       } else {
-        g.drawImage(img, sx, 0, cellW, cellH, 0, 0, cellW, cellH);
+        g.drawImage(img, sx, 0, cellW, cellH, dx, dy, cellW, cellH);
       }
       return cv;
     }
