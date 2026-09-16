@@ -318,6 +318,24 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'I will see you again, Guts. I will see you again, on the day the Falcon falls.',
     },
   },
+  // ─────────── Chapter 14 boss: Void-Form Griffith (the second eclipse) ───────────
+  // Distinct from chapter-13 Femto: chapter 14's Griffith is fully merged
+  // with the Idea of Evil during the Falconia-incarnation eclipse. He has
+  // begun to BE the city; the hawk is the city is the hawk. The player
+  // must sever Griffith from the dream.
+  void_form: {
+    defId: 'void_form', name: 'Void Griffith', cls: 'God-Hand-Eclipse', level: 14, sprite: 'warlord', portrait: 'griffith',
+    desc: 'The Falconia-incarnation is complete. Griffith has stopped being a man; he is the city, and the city is the dream, and the dream is the hawk. What stands on Ganishka\'s spine is the Idea of Evil wearing Griffith\'s face.',
+    stats: s({ hp: 100, str: 22, skl: 18, spd: 24, lck: 0, def: 16, res: 22, mov: 10, con: 20 }),
+    growths: zero,
+    items: [],
+    ai: 'boss', boss: true,
+    quotes: {
+      battle: 'I am the dream and the dreamer and the dreamed. Step into my city, Guts — it has been waiting for you.',
+      rage: 'You cannot sever what was never two. The hawk and the city were always one. You are too late.',
+      death: 'The dream... stays...',
+    },
+  },
 };
 
 let uidCounter = 1;

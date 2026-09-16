@@ -17,7 +17,9 @@ describe('Chapter 14 — The Second Eclipse', () => {
   it('has the right id, name and boss declaration', () => {
     expect(CHAPTER_14.id).toBe(14);
     expect(CHAPTER_14.name.toLowerCase()).toContain('second eclipse');
-    expect(CHAPTER_14.bossDefId).toBe('femto');
+    // chapter 14's boss is Griffith-as-Void-Form (the second-eclipse
+    // incarnation), distinct from chapter 13's femto.
+    expect(CHAPTER_14.bossDefId).toBe('void_form');
   });
 
   it('closes the chapter id-space', () => {
@@ -51,7 +53,7 @@ describe('Chapter 14 — The Second Eclipse', () => {
     expect(mass.length).toBe(5);
     expect(swirl.length).toBe(4);
     expect(hawk.length).toBe(1);
-    expect(hawk[0].def).toBe('femto');
+    expect(hawk[0].def).toBe('void_form');
   });
 
   it('every unit is on a walkable, in-bounds tile', () => {
@@ -73,9 +75,9 @@ describe('Chapter 14 — The Second Eclipse', () => {
     expect(eng.phase).toBe('player');
     expect(eng.players().length).toBe(6);
     expect(eng.enemies().length).toBe(10);
-    const femto = eng.units.find(u => u.defId === 'femto')!;
-    expect(femto).toBeTruthy();
-    expect(femto.boss).toBe(true);
+    const boss = eng.units.find(u => u.defId === 'void_form')!;
+    expect(boss).toBeTruthy();
+    expect(boss.boss).toBe(true);
   });
 
   // ───────────────────────── Final stand AI behaviour ─────────────────────────
@@ -87,9 +89,9 @@ describe('Chapter 14 — The Second Eclipse', () => {
 
   it('Femto is the only boss and is active', () => {
     const eng = new BattleEngine(CHAPTER_14, null);
-    const femto = eng.units.find(u => u.defId === 'femto')!;
-    expect(femto.active).toBe(true);
-    expect(femto.ai).toBe('boss');
+    const boss = eng.units.find(u => u.defId === 'void_form')!;
+    expect(boss.active).toBe(true);
+    expect(boss.ai).toBe('boss');
   });
 
   // ───────────────────────── dialogue ─────────────────────────

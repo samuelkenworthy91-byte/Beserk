@@ -64,10 +64,13 @@ export const CHAPTER_14: ChapterDef = {
     { def: 'a_swarm', faction: 'enemy', x: 5, y: 3, level: 10, group: 'swirl', active: true, aggro: 99 },
     { def: 'a_swarm', faction: 'enemy', x: 9, y: 3, level: 10, group: 'swirl', active: true, aggro: 99 },
 
-    // ── hawk: Griffith-as-Femto at full God-Hand. The chapter boss. ──
-    { def: 'femto', faction: 'enemy', x: 7, y: 5, ai: 'boss', group: 'hawk', active: true, aggro: 99 },
+    // ── hawk: Griffith-as-Void-Form at full God-Hand-Eclipse power. ──
+    //   Distinct from chapter 13's Femto — the second-eclipse-incarnation
+    //   has merged Griffith with the Idea of Evil. He is the hawk, the
+    //   city, and the dream. He has begun to be Falconia itself.
+    { def: 'void_form', faction: 'enemy', x: 7, y: 5, ai: 'boss', group: 'hawk', active: true, aggro: 99 },
   ],
-  bossDefId: 'femto',
+  bossDefId: 'void_form',
   intro: {
     id: 'ch14_intro',
     lines: [
