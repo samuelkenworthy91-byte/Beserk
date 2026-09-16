@@ -332,7 +332,8 @@ export default function BattleCutscene({ plan, map, weather, onRound, onDone }: 
         me.frame = 'ready';
         await wait(F.ready);
         me.frame = 'wind';
-        sfx.swing();
+        // kind-aware wind-up sfx (sword clash / pierce / ironThud / etc.)
+        sfx.forKind(me.kind)();
         const t0w = vClock;
         while (!finished && vClock - t0w < F.wind) {
           const k = (vClock - t0w) / F.wind;

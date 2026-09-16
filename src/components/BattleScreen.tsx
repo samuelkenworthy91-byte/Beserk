@@ -46,7 +46,18 @@ export default function BattleScreen({ chapter, campaign, resume, onVictory, onR
   const victorySent = useRef(false);
 
   useEffect(() => { engine.onChange = () => setV(v => v + 1); }, [engine]);
-  useEffect(() => { sfx.unlock(); }, []);
+  useEffect(() => {
+    sfx.unlock();
+    return () => { sfx.stopBossHum(); sfx.stopRain(); };
+  }, []);
+
+  // ambient weather — start the rain loop when a chapter declares
+  // weather === 'rain'. Stop it on unmount or chapter change.
+  useEffect(() => {
+    if (chapter.weather === 'rain') sfx.startRain();
+    else                            sfx.stopRain();
+    return () => { sfx.stopRain(); };
+  }, [chapter]);
 
   const lostRef = useRef(false);
 
@@ -55,11 +66,18 @@ export default function BattleScreen({ chapter, campaign, resume, onVictory, onR
     if (head.type === 'gameover') {
       lostRef.current = true;
       sfx.gameover();
+      sfx.stopBossHum();
       setGameOver(true);
+    } else if (head.type === 'rage') {
+      // Boss enrage: fade in the menacing hum and an extra thunder
+      // clap. The hum persists until victory / gameover / chapter end.
+      sfx.thunder();
+      sfx.startBossHum();
     } else if (head.type === 'victory') {
       if (!victorySent.current && !lostRef.current) {
         victorySent.current = true;
         sfx.victory();
+        sfx.stopBossHum();
         setTimeout(() => {
           onVictory({
             turns: engine.turn,

@@ -22,6 +22,7 @@ export type EngineEvent =
   | { type: 'levelup'; unit: Unit; gains: { label: string; stat: string }[] }
   | { type: 'death'; unit: Unit }
   | { type: 'quote'; unit: Unit; text: string }
+  | { type: 'rage'; unit: Unit }
   | { type: 'victory' }
   | { type: 'gameover' }
   | { type: 'hint'; text: string; id: string }
@@ -150,6 +151,7 @@ export class BattleEngine {
     }
     this.pushHint('boss_rage',
       'Bazuso has left the gate. Off the stone he no longer mends each turn — but he swings harder now. He trades blows with Guts almost evenly, so soften him with the others before you close.');
+    this.events.push({ type: 'rage', unit: b });
   }
 
   /** Evaluate every dormant enemy against its triggers. */
