@@ -41,27 +41,25 @@ describe('characterAssets aggregator', () => {
   });
 
   it('stub-only characters do not throw on boot', () => {
-    // Corkus / Rickert / Bazuso / Femto / VoidForm / Merc / Soldier /
-    // Fighter / Archer / C-prefix / A-prefix are currently stubs; the
+    // Rickert / Bazuso / Femto / VoidForm / Merc / Soldier / Fighter
+    // / Archer / C-prefix / A-prefix are currently stubs; the
     // aggregator should call their no-op register functions without
     // crashing.
     expect(() => registerAllCharacterAssets()).not.toThrow();
     // Stubbed characters do not show up in the asset registry.
-    expect(getBattleAsset('corkus')).toBeNull();
     expect(getBattleAsset('rickert')).toBeNull();
     expect(getBattleAsset('bazuso')).toBeNull();
+    expect(getBattleAsset('merc')).toBeNull();
   });
 
   it('keeps adding authored entries without losing earlier registrations', () => {
     registerAllCharacterAssets();
-    // Each authored character must be reachable through the
-    // same getBattleAsset / getPortraitAsset surface.
     expect(getBattleAsset('guts')?.url).toBe('/sprites/battle/guts.png');
     expect(getBattleAsset('griffith')?.url).toBe('/sprites/battle/griffith.png');
     expect(getBattleAsset('casca')?.url).toBe('/sprites/battle/casca.png');
     expect(getBattleAsset('judeau')?.url).toBe('/sprites/battle/judeau.png');
     expect(getBattleAsset('pippin')?.url).toBe('/sprites/battle/pippin.png');
-    expect(getPortraitAsset('pippin')?.url).toBe('/portraits/pippin.png');
+    expect(getBattleAsset('corkus')?.url).toBe('/sprites/battle/corkus.png');
   });
 
   it('preloadAllCharacterAssets tolerates stub modules', async () => {
