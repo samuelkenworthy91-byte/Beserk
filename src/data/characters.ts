@@ -168,6 +168,21 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'The bridge... is not... yours yet...',
     },
   },
+  // ─────────── Chapter 4 boss: wounded knight in the keep ───────────
+  c_veteran: {
+    defId: 'c_veteran', name: 'Sir Garriott', cls: 'Wounded Knight', level: 5, sprite: 'soldier', portrait: 'soldier',
+    desc: 'A knight of the old order — once-armoured, now wounded. His sword arm works. His pride still drives him to swing it. UNFLINCHING: no one doubles him.',
+    stats: s({ hp: 32, str: 8, skl: 7, spd: 5, lck: 2, def: 8, res: 4, mov: 4, con: 13 }),
+    growths: zero,
+    items: [{ id: 'iron_sword', uses: 40 }],
+    ai: 'boss', boss: true,
+    traits: ['unflinching'],
+    quotes: {
+      battle: 'The Hawk sends children to take a town? I\'ve fought longer than any of you have lived.',
+      rage: 'Stand still, dogs! Stand still and learn how a sword is supposed to be swung!',
+      death: 'The kingdom... will remember...',
+    },
+  },
 };
 
 let uidCounter = 1;
