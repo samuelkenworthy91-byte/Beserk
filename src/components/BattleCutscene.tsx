@@ -221,6 +221,13 @@ export default function BattleCutscene({ plan, map, weather, onRound, onDone }: 
     // the lens punch squashes it, so the heaviest hits feel like the
     // camera lurches toward the blow instead of just vibrating.
     let lensT = -9999, lensAmp = 0, lensCx = 0, lensCy = 0, lensDur = 220;
+    // Honour the system "reduce motion" preference: shrink the camera punch
+    // and lens punch so motion-sensitive players see a calmer scene. The
+    // combat timing (wind/swing/recover) is untouched — only the camera FX.
+    const motionMul = typeof window !== 'undefined'
+      && window.matchMedia
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? 0.25 : 1;
     let critFlashT = -9999;
     let impactRing: { x: number; y: number; t0: number; big: boolean } | null = null;
     let koT = -1;
@@ -296,11 +303,11 @@ export default function BattleCutscene({ plan, map, weather, onRound, onDone }: 
     }
 
     function punch(amp: number, dir: number, dur: number) {
-      shakeT = vClock; shakeAmp = amp; shakeDir = dir; shakeDur = dur;
+      shakeT = vClock; shakeAmp = amp * motionMul; shakeDir = dir; shakeDur = dur;
     }
 
     function lensPunch(amp: number, cx: number, cy: number, dur: number) {
-      lensT = vClock; lensAmp = amp; lensCx = cx; lensCy = cy; lensDur = dur;
+      lensT = vClock; lensAmp = amp * motionMul; lensCx = cx; lensCy = cy; lensDur = dur;
     }
 
     // ── choreography ─────────────────────────────────────────────────────────
