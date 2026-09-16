@@ -1,4 +1,7 @@
 import { bakeFrame, blitFrame, blitFlash, type Frame, type Palette } from './frameKit';
+import {
+  getBattleAsset, peekImage, battleColFor,
+} from './assetLoader';
 import { GUTS_FRAMES, GUTS_PALETTE } from './framesGuts';
 import {
   SWORD_FRAMES, LANCE_FRAMES, AXE_FRAMES, BOW_FRAMES, BAZUSO_FRAMES,
@@ -49,10 +52,50 @@ function resolve(lookId: string, kind: WKind, frame: FrameName, tint: 'player' |
   return { f, pal: look.palette(tint), key: `${lookId}|${kind}|${frame}|${tint}` };
 }
 
+const battleFlipCache = new Map<string, HTMLCanvasElement>();
+
 export function paintBattleSprite(
   ctx: CanvasRenderingContext2D, lookId: string, kind: WKind, frame: FrameName,
   tint: 'player' | 'enemy', x: number, y: number, faceRight: boolean, alpha = 1,
 ) {
+  // ─── fast path: external PNG sprite sheet ───
+  const asset = getBattleAsset(lookId);
+  if (asset) {
+    const img = peekImage(asset.url);
+    if (img) {
+      const col = battleColFor(frame);
+      const cellW = asset.sheet.cellW;
+      const cellH = asset.sheet.cellH;
+      const rightRow = asset.rightRow ?? 0;
+      const leftRow = asset.leftRow ?? 1;
+      const row = faceRight ? rightRow : leftRow;
+      const sx = col * cellW;
+      const sy = row * cellH;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.imageSmoothingEnabled = false;
+      const dx = Math.round(x - cellW / 2);
+      const dy = Math.round(y - cellH);
+      if (faceRight) {
+        ctx.drawImage(img, sx, sy, cellW, cellH, dx, dy, cellW, cellH);
+      } else {
+        const cacheKey = `flip|${lookId}|${frame}`;
+        let flipCv = battleFlipCache.get(cacheKey);
+        if (!flipCv) {
+          flipCv = document.createElement('canvas');
+          flipCv.width = cellW; flipCv.height = cellH;
+          const fg = flipCv.getContext('2d')!;
+          fg.imageSmoothingEnabled = false;
+          fg.translate(cellW, 0); fg.scale(-1, 1);
+          fg.drawImage(img, sx, sy, cellW, cellH, 0, 0, cellW, cellH);
+          battleFlipCache.set(cacheKey, flipCv);
+        }
+        ctx.drawImage(flipCv, dx, dy);
+      }
+      ctx.restore();
+      return;
+    }
+  }
   const { f, pal, key } = resolve(lookId, kind, frame, tint);
   blitFrame(ctx, bakeFrame(key, f, pal), x, y, faceRight, alpha);
 }
@@ -61,6 +104,41 @@ export function paintBattleFlash(
   ctx: CanvasRenderingContext2D, lookId: string, kind: WKind, frame: FrameName,
   tint: 'player' | 'enemy', x: number, y: number, faceRight: boolean, strength: number,
 ) {
+  const asset = getBattleAsset(lookId);
+  if (asset) {
+    const img = peekImage(asset.url);
+    if (img) {
+      const col = battleColFor(frame);
+      const cellW = asset.sheet.cellW;
+      const cellH = asset.sheet.cellH;
+      const row = faceRight ? (asset.rightRow ?? 0) : (asset.leftRow ?? 1);
+      const sx = col * cellW;
+      const sy = row * cellH;
+      ctx.save();
+      ctx.globalAlpha = strength;
+      ctx.imageSmoothingEnabled = false;
+      const dx = Math.round(x - cellW / 2);
+      const dy = Math.round(y - cellH);
+      if (faceRight) {
+        ctx.drawImage(img, sx, sy, cellW, cellH, dx, dy, cellW, cellH);
+      } else {
+        const cacheKey = `flip|${lookId}|${frame}`;
+        let flipCv = battleFlipCache.get(cacheKey);
+        if (!flipCv) {
+          flipCv = document.createElement('canvas');
+          flipCv.width = cellW; flipCv.height = cellH;
+          const fg = flipCv.getContext('2d')!;
+          fg.imageSmoothingEnabled = false;
+          fg.translate(cellW, 0); fg.scale(-1, 1);
+          fg.drawImage(img, sx, sy, cellW, cellH, 0, 0, cellW, cellH);
+          battleFlipCache.set(cacheKey, flipCv);
+        }
+        ctx.drawImage(flipCv, dx, dy);
+      }
+      ctx.restore();
+      return;
+    }
+  }
   const { f, pal, key } = resolve(lookId, kind, frame, tint);
   blitFlash(ctx, bakeFrame(key, f, pal), x, y, faceRight, strength);
 }

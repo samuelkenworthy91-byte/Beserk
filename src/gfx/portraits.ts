@@ -2,6 +2,9 @@ import {
   PORTRAIT_ART, PALETTES, EXPRESSIONS, HAS_EXPRESSIONS,
   type Expression, type Palette, type Rows,
 } from './portraitArt';
+import {
+  getPortraitAsset, peekImage, portraitColFor,
+} from './assetLoader';
 
 // ─── Dialogue portrait renderer ──────────────────────────────────────────────
 // Hand-authored 96×96 pixel art (portraitArt.ts) is rasterised, patched with an
@@ -218,6 +221,49 @@ export function getPortrait(
   key: string | undefined, flip = false, expr: Expression = 'neutral', dim = false,
 ): HTMLCanvasElement | null {
   if (!key) return null;
+
+  // ─── fast path: externally-authored sprite sheet ───
+  const asset = getPortraitAsset(key);
+  if (asset) {
+    const img = peekImage(asset.url);
+    if (img) {
+      const col = portraitColFor(asset, expr);
+      const cellW = asset.sheet.kind === 'strip' ? asset.sheet.cellW : asset.sheet.cellW;
+      const cellH = asset.sheet.kind === 'strip' ? asset.sheet.cellH : asset.sheet.cellH;
+      const sx = col * cellW;
+      const cv = document.createElement('canvas');
+      cv.width = cellW; cv.height = cellH;
+      const g = cv.getContext('2d')!;
+      g.imageSmoothingEnabled = false;
+      if (dim) {
+        const tint = document.createElement('canvas');
+        tint.width = cellW; tint.height = cellH;
+        const tg = tint.getContext('2d')!;
+        tg.imageSmoothingEnabled = false;
+        if (flip) {
+          tg.translate(cellW, 0); tg.scale(-1, 1);
+        }
+        tg.drawImage(img, sx, 0, cellW, cellH, 0, 0, cellW, cellH);
+        const id = tg.getImageData(0, 0, cellW, cellH);
+        const d = id.data;
+        for (let i = 0; i < d.length; i += 4) {
+          if (d[i + 3] < 128) continue;
+          d[i]     = Math.round(d[i]     * 0.62 + 26 * 0.38);
+          d[i + 1] = Math.round(d[i + 1] * 0.62 + 32 * 0.38);
+          d[i + 2] = Math.round(d[i + 2] * 0.62 + 48 * 0.38);
+        }
+        tg.putImageData(id, 0, 0);
+        g.drawImage(tint, 0, 0);
+      } else if (flip) {
+        g.translate(cellW, 0); g.scale(-1, 1);
+        g.drawImage(img, sx, 0, cellW, cellH, 0, 0, cellW, cellH);
+      } else {
+        g.drawImage(img, sx, 0, cellW, cellH, 0, 0, cellW, cellH);
+      }
+      return cv;
+    }
+  }
+
   const base = baseCanvas(key, expr);
   if (!base) return null;
   if (!flip && !dim) return base;

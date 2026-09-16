@@ -1,5 +1,6 @@
 import type { Faction } from '../engine/types';
 import { MAP_SPRITES, MAP_SPRITE_PALETTES } from './mapSpritesCast';
+import { getMapAsset, peekImage, mapColFor, type MapFrameName } from './assetLoader';
 
 // ─── Tactical map units ──────────────────────────────────────────────────────
 // Hand-authored 22×30 pixel figures, anchored at the bottom of their 32×32 tile
@@ -333,6 +334,55 @@ function build(look: string, faction: Faction, frame: number, grey: boolean): HT
 }
 
 function sprite(look: string, faction: Faction, frame: number, grey: boolean): HTMLCanvasElement {
+  // ─── fast path: external PNG sprite sheet ───
+  const asset = getMapAsset(look);
+  if (asset) {
+    const img = peekImage(asset.url);
+    if (img) {
+      const frameOrder: MapFrameName[] = asset.frames ?? [
+        'idle-front', 'idle-back', 'idle-left', 'idle-right',
+        'walkA-front', 'walkA-back', 'walkA-left', 'walkA-right',
+        'walkB-front', 'walkB-back', 'walkB-left', 'walkB-right',
+      ];
+      const half = frame === 0
+        ? ['idle-front', 'idle-right', 'idle-back', 'idle-left'] as MapFrameName[]
+        : ['walkA-front', 'walkA-right', 'walkA-back', 'walkA-left'] as MapFrameName[];
+      const col = mapColFor(frameOrder, half[0]);
+      const cellW = asset.sheet.kind === 'strip' ? asset.sheet.cellW : asset.sheet.cellW;
+      const cellH = asset.sheet.kind === 'strip' ? asset.sheet.cellH : asset.sheet.cellH;
+      const sx = col * cellW;
+      const k = `ext|${look}|${faction}|${frame}|${grey}`;
+      let cv = cache.get(k);
+      if (!cv) {
+        cv = document.createElement('canvas');
+        cv.width = cellW; cv.height = cellH;
+        const g = cv.getContext('2d')!;
+        g.imageSmoothingEnabled = false;
+        if (grey) {
+          const tmp = document.createElement('canvas');
+          tmp.width = cellW; tmp.height = cellH;
+          const tg = tmp.getContext('2d')!;
+          tg.imageSmoothingEnabled = false;
+          tg.drawImage(img, sx, 0, cellW, cellH, 0, 0, cellW, cellH);
+          const id = tg.getImageData(0, 0, cellW, cellH);
+          const d = id.data;
+          for (let i = 0; i < d.length; i += 4) {
+            if (d[i + 3] < 128) continue;
+            const n = 0.58;
+            d[i]     = Math.round(d[i]     * n + 44 * (1 - n));
+            d[i + 1] = Math.round(d[i + 1] * n + 44 * (1 - n));
+            d[i + 2] = Math.round(d[i + 2] * n + 54 * (1 - n));
+          }
+          tg.putImageData(id, 0, 0);
+          g.drawImage(tmp, 0, 0);
+        } else {
+          g.drawImage(img, sx, 0, cellW, cellH, 0, 0, cellW, cellH);
+        }
+        cache.set(k, cv);
+      }
+      return cv;
+    }
+  }
   const k = `${look}|${faction}|${frame}|${grey}`;
   let cv = cache.get(k);
   if (!cv) { cv = build(look, faction, frame, grey); cache.set(k, cv); }
