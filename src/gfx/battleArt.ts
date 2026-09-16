@@ -5,6 +5,7 @@ import {
   PAL_MERC, PAL_SOLDIER_P, PAL_SOLDIER_E, PAL_RAIDER_P, PAL_RAIDER_E,
   PAL_ARCHER_P, PAL_ARCHER_E, PAL_BAZUSO,
 } from './framesClass';
+import { GRIFFITH_FRAMES, PAL_GRIFFITH } from './framesGriffith';
 import type { WKind, FrameName } from './battlePoses';
 
 export type { WKind, FrameName };
@@ -33,6 +34,7 @@ function byWeapon(kind: WKind): FrameSet {
 
 const LOOKS: Record<string, LookDef> = {
   guts: { frames: () => GUTS_FRAMES, palette: () => GUTS_PALETTE },
+  griffith: { frames: () => GRIFFITH_FRAMES, palette: () => PAL_GRIFFITH },
   warlord: { frames: () => BAZUSO_FRAMES, palette: () => PAL_BAZUSO },
   merc: { frames: byWeapon, palette: () => PAL_MERC },
   soldier: { frames: byWeapon, palette: t => (t === 'player' ? PAL_SOLDIER_P : PAL_SOLDIER_E) },
