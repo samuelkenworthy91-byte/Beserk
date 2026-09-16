@@ -28,6 +28,10 @@ export interface UnitSnapshot {
   ai: string; quoteShown?: boolean;
   // encounter pacing state — must survive a suspend/resume
   group?: string; aggro?: number; active?: boolean; raged?: boolean;
+  // patrol AI state — anchor + direction so a patrolling unit resumes its
+  // walk rather than snapping back to a fresh anchor
+  patrolAnchor?: { x: number; y: number };
+  patrolDir?: number;
 }
 
 export interface BattleSnapshot {

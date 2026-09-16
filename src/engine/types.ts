@@ -4,7 +4,7 @@
 
 export type Faction = 'player' | 'enemy';
 export type WeaponType = 'sword' | 'lance' | 'axe' | 'bow';
-export type AIType = 'attack' | 'guard' | 'boss';
+export type AIType = 'attack' | 'guard' | 'patrol' | 'boss';
 export type WeatherType = 'none' | 'rain';
 
 export interface Stats {
@@ -93,6 +93,9 @@ export interface Unit extends CharTemplate {
   aggro: number;             // tiles of awareness while dormant
   active: boolean;           // false = holding position, ignores the player
   raged?: boolean;           // boss has been provoked out of its post
+  // ── patrol AI ──
+  patrolAnchor?: { x: number; y: number }; // home tile
+  patrolDir?: number;         // +1 = walking toward anchor, -1 = walking away
 }
 
 // ─── Dialogue ────────────────────────────────────────────────────────────────

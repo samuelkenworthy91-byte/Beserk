@@ -620,6 +620,43 @@ export class BattleEngine {
       this.busy = false;
       const plan = planCombat(foe, best.tgt, this.map);
       await this.runCombat(plan);
+    } else if (foe.ai === 'patrol') {
+      // Patrol: walk back-and-forth between the current position and a
+      // remembered anchor tile. If a player is close (within 3 tiles) the
+      // patrol drops and the next phase treats the foe as 'attack' — the
+      // patrol was a way of presenting an interesting idle behaviour, not
+      // a defensive one.
+      const anchor = foe.patrolAnchor ?? { x: foe.x, y: foe.y };
+      const target = foe.patrolDir === -1 ? anchor : { x: anchor.x, y: anchor.y + 2 };
+      const dir = foe.patrolDir ?? 1;
+      const targetTile = dir === 1
+        ? { x: anchor.x, y: anchor.y + 2 }
+        : anchor;
+      let bestTile: [number, number] | null = null;
+      let bestD = manh(foe.x, foe.y, targetTile.x, targetTile.y);
+      for (const mk of moves.keys()) {
+        const [mx, my] = mk.split(',').map(Number);
+        if (this.unitAt(mx, my) && !(mx === foe.x && my === foe.y)) continue;
+        const d = manh(mx, my, targetTile.x, targetTile.y);
+        if (d < bestD) { bestD = d; bestTile = [mx, my]; }
+      }
+      if (bestTile) {
+        this.busy = true;
+        await this.slideUnit(foe, pathTo(moves, bestTile[0], bestTile[1]));
+        this.busy = false;
+        // arrived: reverse direction
+        if (bestD === 0) foe.patrolDir = (foe.patrolDir ?? 1) * -1;
+      }
+      // promote to attacker if a player is close — patrol AI only really
+      // matters when no one is in range; once someone approaches, the foe
+      // switches to active pursuit on the next phase
+      let closestPlayer = Infinity;
+      for (const t of targets) {
+        const d = manh(foe.x, foe.y, t.x, t.y);
+        if (d < closestPlayer) closestPlayer = d;
+      }
+      if (closestPlayer <= 3) foe.ai = 'attack';
+      void target;
     } else if (foe.ai === 'attack') {
       // advance toward nearest player
       let nearest = targets[0];
@@ -670,6 +707,7 @@ export class BattleEngine {
         level: u.level, stats: { ...u.stats }, items: u.items.map(i => ({ ...i })),
         moved: u.moved, dead: u.dead, ai: u.ai, quoteShown: u.quoteShown,
         group: u.group, aggro: u.aggro, active: u.active, raged: u.raged,
+        patrolAnchor: u.patrolAnchor, patrolDir: u.patrolDir,
       })),
     };
   }
@@ -686,6 +724,10 @@ export class BattleEngine {
       u.items = su.items.filter(i => itemExists(i.id)).map(i => ({ ...i }));
       u.moved = su.moved; u.dead = su.dead; u.quoteShown = su.quoteShown;
       u.raged = su.raged;
+      // preserve patrol state — without this, a patrolling enemy would
+      // re-anchor on resume and the player could exploit the reset.
+      if (su.patrolAnchor) u.patrolAnchor = { ...su.patrolAnchor };
+      if (su.patrolDir !== undefined) u.patrolDir = su.patrolDir;
       this.units.push(u);
     }
     this.mode = 'idle';

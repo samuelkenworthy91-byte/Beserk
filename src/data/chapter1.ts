@@ -41,9 +41,14 @@ export const CHAPTER_1: ChapterDef = {
     { def: 'bren', faction: 'player', x: 1, y: 7 },
     { def: 'sena', faction: 'player', x: 0, y: 8 },
 
-    // ── picket: a lone spear and an axeman watching the road ──
+    // ── picket: a lone spear and an axeman patrolling the road ──
+    //   The axeman has a patrol AI so once he's woken up he paces between
+    //   his current tile and one tile to the north rather than just
+    //   standing or rushing the player — gives the awakening beat a
+    //   little life.
     { def: 'e_soldier', faction: 'enemy', x: 5, y: 6, level: 1, group: 'picket', aggro: 3 },
-    { def: 'e_fighter', faction: 'enemy', x: 6, y: 3, level: 1, group: 'picket', aggro: 3 },
+    { def: 'e_fighter', faction: 'enemy', x: 6, y: 3, level: 1, ai: 'patrol',
+      group: 'picket', aggro: 3 },
 
     // ── thicket: bowman in real cover with a spear screening the road ──
     { def: 'e_archer', faction: 'enemy', x: 9, y: 2, level: 2, group: 'thicket', aggro: 3 },

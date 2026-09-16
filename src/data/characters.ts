@@ -128,6 +128,12 @@ export function mkUnit(
     u.level += 1;
   }
   u.hp = u.stats.hp;
+  // patrol AI: anchor is the deployment tile; direction defaults to +1
+  // so the first phase walks AWAY from the anchor and then comes back
+  if ((opts.ai ?? t.ai) === 'patrol') {
+    u.patrolAnchor = { x, y };
+    u.patrolDir = 1;
+  }
   void getItem; // (keeps tree-shaking honest for future item logic)
   return u;
 }

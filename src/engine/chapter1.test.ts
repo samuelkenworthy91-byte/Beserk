@@ -138,4 +138,28 @@ describe('Chapter 1 end-to-end', () => {
     (eng as unknown as { evaluateTriggers: () => void }).evaluateTriggers();
     expect(boss.raged).toBe(true);
   });
+
+  it('Chapter 1 picket has a patrol-mode enemy', () => {
+    const eng = new BattleEngine(CHAPTER_1, null);
+    const patroller = eng.units.find(u => u.ai === 'patrol');
+    expect(patroller).toBeTruthy();
+    // the patroller must have an anchor at its deployment tile and a
+    // direction — without these the AI would have nothing to walk between
+    expect(patroller!.patrolAnchor).toBeTruthy();
+    expect(patroller!.patrolDir).toBeDefined();
+  });
+
+  it('patrol state survives a suspend/resume', () => {
+    const eng = new BattleEngine(CHAPTER_1, null);
+    const patroller = eng.units.find(u => u.ai === 'patrol')!;
+    patroller.x = 7; patroller.y = 4;
+    patroller.patrolAnchor = { x: 6, y: 4 };
+    patroller.patrolDir = -1;
+
+    const snap = eng.snapshot();
+    const eng2 = new BattleEngine(CHAPTER_1, null, snap);
+    const after = eng2.units.find(u => u.defId === patroller.defId)!;
+    expect(after.patrolAnchor).toEqual({ x: 6, y: 4 });
+    expect(after.patrolDir).toBe(-1);
+  });
 });
