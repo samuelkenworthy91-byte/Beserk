@@ -34,12 +34,12 @@ export default function ResultsScreen({ chapter, result, onContinue }: {
 
           <div className="gba-inset flex mb-3 py-2.5">
             <div className="flex-1 text-center">
-              <div className="text-[10px] text-[#8a8a78] leading-none">TURNS</div>
+              <div className="text-[12px] text-[#8a8a78] leading-none tracking-wider">TURNS</div>
               <div className="text-[22px] font-bold text-[#ffd873] leading-tight">{result.turns}</div>
             </div>
             <div className="w-px bg-[#ffffff14]" />
             <div className="flex-1 text-center">
-              <div className="text-[10px] text-[#8a8a78] leading-none">SURVIVORS</div>
+              <div className="text-[12px] text-[#8a8a78] leading-none tracking-wider">SURVIVORS</div>
               <div className="text-[22px] font-bold leading-tight">{result.party.length}</div>
             </div>
           </div>
@@ -71,7 +71,7 @@ export default function ResultsScreen({ chapter, result, onContinue }: {
             </div>
           )}
 
-          <div className="text-[10px] text-[#6a6a5a] mt-3 text-center">
+          <div className="text-[12px] text-[#6a6a5a] mt-3 text-center">
             Progress saved. Levels, items and losses carry forward.
           </div>
         </div>

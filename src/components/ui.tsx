@@ -120,7 +120,7 @@ export function UnitCard({ unit, playerPhase }: { unit: Unit; playerPhase: boole
               ['MOV', unit.stats.mov], ['CON', unit.stats.con],
             ] as const).map(([l, v]) => (
               <div key={l} className="text-center">
-                <div className="text-[10px] text-[#8a8a78] leading-none">{l}</div>
+                <div className="text-[11px] text-[#8a8a78] leading-none tracking-wider">{l}</div>
                 <div className="text-[15px] font-bold leading-tight">{v}</div>
               </div>
             ))}
@@ -179,7 +179,7 @@ function OutcomeSide({ name, hp, max, proj, tone }: {
 function BigStat({ label, value, tone }: { label: string; value: string; tone?: 'good' | 'warn' | 'crit' }) {
   return (
     <div className="flex-1 text-center">
-      <div className="text-[10px] text-[#8a8a78] leading-none">{label}</div>
+      <div className="text-[11px] text-[#8a8a78] leading-none tracking-wider">{label}</div>
       <div className={cn('text-[19px] font-bold leading-tight tabular-nums',
         tone === 'warn' ? 'text-[#ef7258]' : tone === 'crit' ? 'text-[#ffd873]' : 'text-[#e8e4d4]')}>
         {value}
@@ -265,7 +265,7 @@ export function ForecastPanel({ a, d, fc, terrain, onAttack, onBack }: {
           <Swords size={15} /> ATTACK
         </button>
       </div>
-      <div className="text-center text-[10px] text-[#7a7a68] mt-1.5">
+      <div className="text-center text-[11px] text-[#7a7a68] mt-1.5">
         AS {effectiveSpd(a)} vs {effectiveSpd(d)} · their DEF {d.stats.def}
       </div>
     </div>

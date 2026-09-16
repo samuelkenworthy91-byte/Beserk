@@ -467,7 +467,7 @@ export default function BattleScreen({ chapter, campaign, resume, onVictory, onR
               style={{ minHeight: 60 }}
               onClick={() => engine.cancelSelection()}>
               <Undo2 size={18} />
-              <span className="text-[11px] leading-none">CANCEL</span>
+              <span className="text-[12px] leading-none">CANCEL</span>
             </button>
           )}
 
@@ -479,7 +479,7 @@ export default function BattleScreen({ chapter, campaign, resume, onVictory, onR
               disabled={!canEnd}
               onClick={() => void engine.endTurn()}>
               <Hourglass size={18} />
-              <span className="text-[11px] leading-none">END TURN</span>
+              <span className="text-[12px] leading-none">END TURN</span>
             </button>
           )}
         </div>

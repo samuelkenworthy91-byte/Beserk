@@ -235,7 +235,7 @@ export default function DialogueScreen({ script, bg, card, onDone }: {
                 <ChevronsRight size={18} className={typing ? '' : 'anim-blink'} />
               </div>
             </div>
-            <div className="text-center text-[11px] text-[#7a7a68] mt-1.5 tracking-[0.3em]">TAP TO ADVANCE</div>
+            <div className="text-center text-[12px] text-[#7a7a68] mt-1.5 tracking-[0.3em]">TAP TO ADVANCE</div>
           </div>
         </>
       )}
