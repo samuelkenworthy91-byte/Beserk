@@ -198,6 +198,20 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'The walls... the walls always held...',
     },
   },
+  // ─────────── Chapter 6 boss: ambush captain at Eberus ───────────
+  c_pincers: {
+    defId: 'c_pincers', name: 'Captain Vellant', cls: 'Ambush Captain', level: 5, sprite: 'fighter', portrait: 'soldier',
+    desc: 'A veteran of the wood roads. He knows the moment of ambush — when the column has bent and the bend has thinned. He waits for it. Every time.',
+    stats: s({ hp: 28, str: 8, skl: 9, spd: 8, lck: 4, def: 6, res: 3, mov: 6, con: 10 }),
+    growths: zero,
+    items: [{ id: 'iron_sword', uses: 36 }],
+    ai: 'boss', boss: true,
+    quotes: {
+      battle: 'You were supposed to be at the column. We watched you split. We watched Griffith choose the wagons over the march. Fool.',
+      rage: 'Get them! Get them off the road!',
+      death: 'The grain... they choose grain over the march...',
+    },
+  },
 };
 
 let uidCounter = 1;
