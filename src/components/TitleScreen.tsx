@@ -5,6 +5,7 @@ import {
 import type { CampaignSave, SuspendSave } from '../engine/save';
 import { cn } from '../utils/cn';
 import titleBg from '../assets/title_bg.jpg';
+import FieldGuide from './FieldGuide';
 
 // ─── Title screen: New Game / Resume / Chapter Select / Field Guide ──────────
 
@@ -128,7 +129,7 @@ export default function TitleScreen({ campaign, suspend, chapters, onNewGame, on
                 );
               })}
               <p className="text-[11px] text-[#6a6a5a] leading-relaxed">
-                This build contains Chapter 1. Chapters 2–14 slot into this same engine.
+                All 14 chapters in the campaign. The list is unlocked as your saves clear them.
               </p>
             </div>
           </div>
@@ -137,39 +138,11 @@ export default function TitleScreen({ campaign, suspend, chapters, onNewGame, on
 
       {/* guide */}
       {showGuide && (
-        <div className="absolute inset-0 z-30 flex items-end justify-center bg-[#050508cc]"
-          onClick={() => setShowGuide(false)}>
-          <div className="gba-panel-green anim-sheet w-full flex flex-col"
-            style={{
-              maxWidth: 460, maxHeight: '80vh',
-              marginLeft: 'var(--edge-x)', marginRight: 'var(--edge-x)',
-              marginBottom: 'var(--edge-bottom)',
-            }}
-            onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-3 pt-3 pb-2 shrink-0">
-              <span className="text-[14px] font-bold text-[#d4e0a8] tracking-widest">FIELD GUIDE</span>
-              <button className="gba-btn gba-btn-icon gba-btn-ghost" aria-label="Close"
-                onClick={() => setShowGuide(false)}><X size={18} /></button>
-            </div>
-            <div className="overflow-y-auto px-3 pb-3">
-            {[
-              ['Moving', 'Tap a blue ally, then tap a blue tile. After moving, choose Attack / Item / Wait. Cancel returns the unit.'],
-              ['Attacking', 'Red tiles = weapon range. Tap an enemy, read the forecast (DMG · HIT · CRT), then confirm. HIT 85+ rarely misses; CRT ×3 damage.'],
-              ['Weapon triangle', 'Sword beats Axe beats Lance beats Sword (+15 hit, +1 dmg). Guts’ Greatsword hits like a siege engine but weighs him down — heavy weapons lower avoid and prevent doubling.'],
-              ['Terrain', 'Forest: +1 DEF +20 AVO. Fort & Gate: +2 DEF, heal each turn. Draw strong enemies off their forts.'],
-              ['Phases', 'All allies act once per Player Phase, then enemies move. Forts mend wounds at the start of each side’s phase.'],
-              ['Permadeath', 'If an ally falls, they are gone for good. If Guts falls, the tale ends — retry from the chapter start.'],
-              ['Progress', 'Victory saves levels, items and losses for future chapters. Suspend mid-battle from the Menu.'],
-              ['XP & Levels', 'Strikes and kills grant XP (+bonus vs higher levels & bosses). 100 XP = level up, stats rise by growth chance.'],
-            ].map(([h, b], i) => (
-              <div key={i} className="mb-3">
-                <div className="text-[13px] font-bold text-[#d4e0a8] mb-0.5">{h}</div>
-                <p className="text-[12.5px] leading-relaxed text-[#e0ecd4cc]">{b}</p>
-              </div>
-            ))}
-            </div>
-          </div>
-        </div>
+        <FieldGuide
+          campaign={campaign}
+          chapters={chapters}
+          onClose={() => setShowGuide(false)}
+        />
       )}
     </div>
   );

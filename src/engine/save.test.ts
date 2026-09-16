@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
   newCampaign, saveCampaign, loadCampaign, clearCampaign,
-  saveSuspend, loadSuspend, clearSuspend,
+  saveSuspend, loadSuspend, clearSuspend, applyVictory,
   type CampaignSave,
 } from './save';
 import { BattleEngine } from './battle';
@@ -55,6 +55,41 @@ describe('campaign save', () => {
     localStorage.setItem('bsaga_campaign_v1', '{ not json');
     expect(() => loadCampaign()).not.toThrow();
     expect(loadCampaign()).toBeNull();
+  });
+
+  it('round-trips defeated and bossesDefeated (Field Guide state)', () => {
+    const c: CampaignSave = {
+      unlockedChapters: 9,
+      party: [],
+      fallen: [],
+      totalTurns: 80,
+      defeated: ['e_soldier', 'bazuso', 'casca'],
+      bossesDefeated: ['bazuso'],
+    };
+    saveCampaign(c);
+    const loaded = loadCampaign();
+    expect(loaded).not.toBeNull();
+    expect(loaded!.defeated).toEqual(['e_soldier', 'bazuso', 'casca']);
+    expect(loaded!.bossesDefeated).toEqual(['bazuso']);
+  });
+
+  it('a save without the new fields still loads (back-compat with old saves)', () => {
+    // older builds didn't write defeated/bossesDefeated; the loader must
+    // not choke on the missing keys and the consumers must treat them as []
+    const legacy = {
+      unlockedChapters: 4,
+      party: [],
+      fallen: [],
+      totalTurns: 30,
+    };
+    saveCampaign(legacy as CampaignSave);
+    const loaded = loadCampaign();
+    expect(loaded).not.toBeNull();
+    // Both fields are optional, so they may be undefined. Consumers
+    // should default to [] when undefined — this is the contract tested by
+    // the consumer side in components/FieldGuide.
+    expect(loaded!.defeated ?? []).toEqual([]);
+    expect(loaded!.bossesDefeated ?? []).toEqual([]);
   });
 });
 
@@ -157,5 +192,73 @@ describe('initial encounter state', () => {
     const eng = new BattleEngine(CHAPTER_1, campaign);
     expect(eng.players().find(u => u.defId === 'bren')).toBeUndefined();
     expect(eng.players().length).toBe(3);
+  });
+});
+
+describe('applyVictory', () => {
+  const baseStats = { hp: 30, str: 10, skl: 8, spd: 9, lck: 4,
+                      def: 6, res: 3, mov: 5, con: 8 };
+
+  it('unlocks the next chapter', () => {
+    const next = applyVictory(
+      null, 1, 'bazuso',
+      { party: [{ defId: 'guts', level: 3, exp: 0,
+                  stats: baseStats, items: [], hp: 30 }],
+        fallen: ['e_soldier', 'bazuso'] },
+      ['e_soldier', 'bazuso'],
+      6,
+    );
+    expect(next.unlockedChapters).toBe(2);
+  });
+
+  it('records the boss in bossesDefeated', () => {
+    const next = applyVictory(
+      null, 1, 'bazuso',
+      { party: [], fallen: ['bazuso'] },
+      ['bazuso'], 4,
+    );
+    expect(next.bossesDefeated).toEqual(['bazuso']);
+  });
+
+  it('records every defeated defId into the Bestiary', () => {
+    const next = applyVictory(
+      null, 3, 'c_rebel',
+      { party: [], fallen: ['e_soldier', 'e_fighter', 'e_archer', 'c_rebel'] },
+      ['e_soldier', 'e_fighter', 'e_archer', 'c_rebel'], 7,
+    );
+    expect(next.defeated!.sort()).toEqual(
+      ['c_rebel', 'e_archer', 'e_fighter', 'e_soldier']);
+    // the boss is in both lists — once for the trophy, once in the
+    // bestiary (it's another entry, not special).
+    expect(next.bossesDefeated).toEqual(['c_rebel']);
+  });
+
+  it('does not double-count on a second clear', () => {
+    const first = applyVictory(null, 1, 'bazuso',
+      { party: [], fallen: ['bazuso', 'e_soldier'] },
+      ['bazuso', 'e_soldier'], 4);
+    const second = applyVictory(first, 2, 'griffith',
+      { party: [], fallen: ['griffith', 'e_soldier'] },
+      ['griffith', 'e_soldier'], 5);
+    expect(second.bossesDefeated!.sort()).toEqual(['bazuso', 'griffith']);
+    // 'e_soldier' appears in two rounds; Set dedupe collapses to one entry
+    expect(second.defeated!.filter(d => d === 'e_soldier').length).toBe(1);
+  });
+
+  it('purges the dead from the roster', () => {
+    const next = applyVictory(null, 1, 'bazuso',
+      { party: [
+          { defId: 'bren',  level: 1, exp: 0, stats: baseStats, items: [], hp: 25 },
+          { defId: 'wyatt', level: 1, exp: 0, stats: baseStats, items: [], hp: 25 },
+        ],
+        fallen: ['wyatt'] },
+      [], 4);
+    expect(next.party.map(p => p.defId)).toEqual(['bren']);
+  });
+
+  it('caps unlockedChapters at 14', () => {
+    const next = applyVictory(null, 14, 'femto',
+      { party: [], fallen: [] }, [], 9);
+    expect(next.unlockedChapters).toBe(14);
   });
 });

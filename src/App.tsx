@@ -21,6 +21,7 @@ import type { ChapterDef } from './engine/types';
 import {
   loadCampaign, saveCampaign, clearCampaign, newCampaign,
   loadSuspend, saveSuspend, clearSuspend,
+  applyVictory,
   type BattleSnapshot, type CampaignSave,
 } from './engine/save';
 import { sfx } from './engine/sfx';
@@ -96,20 +97,18 @@ export default function App() {
   };
 
   const onVictory = (chapter: ChapterDef, result: BattleResult) => {
-    // merge party into campaign save
-    const base: CampaignSave = campaign ?? newCampaign();
-    const party = [...base.party];
-    for (const p of result.party) {
-      const i = party.findIndex(x => x.defId === p.defId);
-      if (i >= 0) party[i] = p; else party.push(p);
-    }
-    const fallen = Array.from(new Set([...base.fallen, ...result.fallen]));
-    const updated: CampaignSave = {
-      unlockedChapters: Math.max(base.unlockedChapters, Math.min(14, chapter.id + 1)),
-      // the dead never return, so purge them from the roster too
-      party: party.filter(p => !fallen.includes(p.defId)),
-      fallen, totalTurns: base.totalTurns + result.turns,
-    };
+    // The pure applyVictory helper does the merge, the trophy recording,
+    // and the unlock chain. We persist and refresh state from its return.
+    // result.fallen holds defIds of every enemy that fell; the chapter
+    // boss is among them (the engine fires `victory` when the boss dies).
+    const updated = applyVictory(
+      campaign,
+      chapter.id,
+      chapter.bossDefId,
+      { party: result.party, fallen: result.fallen },
+      result.fallen,
+      result.turns,
+    );
     saveCampaign(updated);
     setCampaign(updated);
     clearSuspend();
