@@ -1,4 +1,5 @@
 import type { Faction } from '../engine/types';
+import { MAP_SPRITES, MAP_SPRITE_PALETTES } from './mapSpritesCast';
 
 // ─── Tactical map units ──────────────────────────────────────────────────────
 // Hand-authored 22×30 pixel figures, anchored at the bottom of their 32×32 tile
@@ -224,6 +225,10 @@ const S_WARLORD: Rows = [
 const MATRICES: Record<string, Rows> = {
   guts: S_GUTS, merc: S_MERC, fighter: S_FIGHTER,
   archer: S_ARCHER, soldier: S_SOLDIER, warlord: S_WARLORD,
+  // Named Band — authored tiles so 'griffith' / 'casca' / 'judeau' /
+  // 'pippin' / 'corkus' / 'rickert' resolve to a real sprite instead of
+  // the generic mercenary fallback.
+  ...MAP_SPRITES,
 };
 
 // ─── palettes ────────────────────────────────────────────────────────────────
@@ -253,6 +258,9 @@ const LOOK_PAL: Record<string, Pal> = {
   // Bazuso: cold steel, fur mantle, blood crest
   warlord: { ...COMMON, '1': '#0f1116', '2': '#1d2028', '3': '#2f343f', r: '#8d2222',
     L: '#4a3826', l: '#241a12', m: '#1c2028', M: '#616b7b', W: '#a6b2c2', b: '#e0d8c2' },
+  // Named Band — palettes lifted from their battle frames so the same
+  // character reads as one design at both scales (map and combat).
+  ...MAP_SPRITE_PALETTES,
 };
 
 // faction tints for the shared levy classes — matched to PAL_SOLDIER_P/E
