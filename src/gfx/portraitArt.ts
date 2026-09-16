@@ -27,12 +27,7 @@
 //   t           bone, teeth, horn
 
 export type Rows = string[];
-
-export const M96 = (rows: Rows): Rows => {
-  const out = rows.map(r => r.padEnd(96, '.'));
-  while (out.length < 96) out.push('.'.repeat(96));
-  return out.slice(0, 96);
-};
+import { M96 } from './portraitGrid';
 
 // ═════════════════════════════════════════════════════════════════════════════
 // GUTS — late teens, hard-eyed, black spiky mane, broken-in mercenary plate.
@@ -445,6 +440,57 @@ export const PALETTES: Record<string, Palette> = {
     n: '#2a2018', o: '#4a3826',
     v: '#4a3826', s: '#41291c',
   },
+  judeau: {
+    ...INK,
+    // lighter, warmer skin than the rest of the cast — Judeau is the optimist
+    '1': '#4e3424', '2': '#704c34', '3': '#946748', '4': '#b88260', '5': '#dba07c',
+    // auburn hair, the brightest hair in the named Band
+    '6': '#3a1e10', '7': '#5a3018', '8': '#7a4524', '9': '#9a5e30',
+    // scout's leathers — light brown to read as one with the hair
+    a: '#3a2614', b: '#5a3e22', c: '#7a5a30', d: '#9a7a48', e: '#bea060',
+    f: '#241810', g: '#3e2818', h: '#5e4024',
+    i: '#4a4034', j: '#6e604a', k: '#968668',
+    n: '#2a1c14', o: '#4a3424',
+    v: '#5e3a28', s: '#3e2418',
+  },
+  pippin: {
+    ...INK,
+    // darker, warmer skin — Pippin is the largest man in the Band
+    '1': '#2c1a10', '2': '#4a2e1c', '3': '#6e452a', '4': '#94613c', '5': '#b88058',
+    // shaved: almost no hair, just the stubble tone
+    '6': '#1a0e08', '7': '#2e1e12', '8': '#483020', '9': '#664628',
+    // brightened leather pauldron — front-row but catches torchlight
+    a: '#3a2614', b: '#5e3e22', c: '#82603a', d: '#a68250', e: '#c8a868',
+    f: '#1d1208', g: '#3a2414', h: '#5e3d20',
+    i: '#3a3024', j: '#5e5240', k: '#867660',
+    n: '#241810', o: '#3e2818',
+    v: '#3e2418', s: '#2a1a10',
+  },
+  corkus: {
+    ...INK,
+    // mid skin, ruddy — Corkus is a sergeant who stands in the sun
+    '1': '#42281c', '2': '#60402e', '3': '#825840', '4': '#a47456', '5': '#c89270',
+    // short dark hair
+    '6': '#0c0a10', '7': '#1a1820', '8': '#2a2630', '9': '#3e3a48',
+    a: '#2a2418', b: '#4a4030', c: '#6a6048', d: '#8c8068', e: '#b0a488',
+    f: '#1d1208', g: '#3c2614', h: '#5e3d20',
+    i: '#3a342a', j: '#5e564a', k: '#867e6a',
+    n: '#2a1c14', o: '#4a3424',
+    v: '#3e2418', s: '#2a1a10',
+  },
+  rickert: {
+    ...INK,
+    // youngest, palest skin with a faint warmth
+    '1': '#52382a', '2': '#76503c', '3': '#9a6c4e', '4': '#bc8866', '5': '#dea484',
+    // auburn bowl-cut, lighter than Judeau's because Rickert is younger
+    '6': '#3a1c10', '7': '#5e2e18', '8': '#7e4828', '9': '#a2643c',
+    // apprentice's leather — soft brown
+    a: '#3e2c1a', b: '#604628', c: '#826238', d: '#a67e50', e: '#caa068',
+    f: '#241810', g: '#3e2818', h: '#5e4024',
+    i: '#5a4830', j: '#806848', k: '#a68864',
+    n: '#2a1c14', o: '#4a3424',
+    v: '#5e3a28', s: '#3e2418',
+  },
 };
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -524,6 +570,9 @@ import {
   PORTRAIT_WYATT, PORTRAIT_BREN, PORTRAIT_SENA,
   PORTRAIT_BAZUSO, PORTRAIT_SOLDIER,
 } from './portraitCast';
+import {
+  PORTRAIT_JUDEAU, PORTRAIT_PIPPIN, PORTRAIT_CORKUS, PORTRAIT_RICKERT,
+} from './portraitCast2';
 
 export const PORTRAIT_ART: Record<string, Rows> = {
   guts: PORTRAIT_GUTS,
@@ -534,6 +583,14 @@ export const PORTRAIT_ART: Record<string, Rows> = {
   sena: PORTRAIT_SENA,
   bazuso: PORTRAIT_BAZUSO,
   soldier: PORTRAIT_SOLDIER,
+  judeau: PORTRAIT_JUDEAU,
+  pippin: PORTRAIT_PIPPIN,
+  corkus: PORTRAIT_CORKUS,
+  rickert: PORTRAIT_RICKERT,
 };
 
-export const HAS_EXPRESSIONS = new Set(['guts', 'griffith', 'casca', 'wyatt', 'bren', 'sena']);
+export const HAS_EXPRESSIONS = new Set([
+  'guts', 'griffith', 'casca',
+  'wyatt', 'bren', 'sena',
+  'judeau', 'pippin', 'corkus', 'rickert',
+]);

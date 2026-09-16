@@ -1,4 +1,4 @@
-import { M96, type Rows } from './portraitArt';
+import { M96, type Rows } from './portraitGrid';
 
 // ─── Supporting cast portraits (96×96) ───────────────────────────────────────
 // Same construction rules as the leads: three-quarter view, five-step skin,
