@@ -304,6 +304,20 @@ export const CHARACTERS: Record<string, CharTemplate> = {
       death: 'The keys... are... not... mine...',
     },
   },
+  // ─────────── Chapter 13 boss: Femto (Griffith-as-God-Hand) ───────────
+  femto: {
+    defId: 'femto', name: 'Femto', cls: 'God Hand', level: 12, sprite: 'warlord', portrait: 'griffith',
+    desc: 'Griffith has been reborn as a God Hand. He is no longer the man who held the sword — he is the sword; the sword that is a wing; the wing that is the God-Handed-Falcon-Of-Death.',
+    stats: s({ hp: 80, str: 18, skl: 16, spd: 22, lck: 0, def: 12, res: 18, mov: 9, con: 18 }),
+    growths: zero,
+    items: [],
+    ai: 'boss', boss: true,
+    quotes: {
+      battle: 'You are not going to win this, Guts. You never did. You are here because I let you arrive.',
+      rage: 'I have reigned over the Spiral for a thousand years. You are dust under the wings.',
+      death: 'I will see you again, Guts. I will see you again, on the day the Falcon falls.',
+    },
+  },
 };
 
 let uidCounter = 1;

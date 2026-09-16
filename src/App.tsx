@@ -15,6 +15,7 @@ import { CHAPTER_9 } from './data/chapter9';
 import { CHAPTER_10 } from './data/chapter10';
 import { CHAPTER_11 } from './data/chapter11';
 import { CHAPTER_12 } from './data/chapter12';
+import { CHAPTER_13 } from './data/chapter13';
 import type { ChapterDef } from './engine/types';
 import {
   loadCampaign, saveCampaign, clearCampaign, newCampaign,
@@ -39,6 +40,7 @@ const CHAPTERS: Record<number, ChapterDef> = {
   [CHAPTER_10.id]: CHAPTER_10,
   [CHAPTER_11.id]: CHAPTER_11,
   [CHAPTER_12.id]: CHAPTER_12,
+  [CHAPTER_13.id]: CHAPTER_13,
 };
 export { CHAPTERS };
 
